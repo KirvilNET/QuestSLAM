@@ -1,0 +1,19 @@
+# ninja log v5
+0	2093	1749437505796459207	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	4ce40d59c49b6550
+2093	2187	1749437505890049457	/Users/comet99/Documents/Code/QuestNav-ROS2/QuestSLAM-ros2/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/345f31q5/obj/arm64-v8a/libgame.so	f326bda76f3985ba
+3	2030	1749437505733909707	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	366acdd13047da3b
+6	1788	1749437505490183790	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	898b183c9bdaa7f8
+1	1723	1749437505424524040	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	9b6f7645250e952e
+4	1677	1749437505382565415	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	507f821f4b4aeed4
+3	1600	1749437505299048749	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	9acbc6d4a41b8bde
+1	1699	1749437505403779332	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	8b9c5a33823c8f7a
+1	1597	1749437505297320124	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	ea5694e5168fdaf9
+18	2735	1749443735861047415	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	ea5694e5168fdaf9
+20	2739	1749443735860931832	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	9acbc6d4a41b8bde
+17	2742	1749443735878428499	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	8b9c5a33823c8f7a
+21	2759	1749443735896932957	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	507f821f4b4aeed4
+17	2837	1749443735976043374	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	9b6f7645250e952e
+22	2949	1749443736090384665	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	898b183c9bdaa7f8
+19	3195	1749443736340224832	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	366acdd13047da3b
+16	3327	1749443736473743624	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	4ce40d59c49b6550
+3327	3552	1749443736699997124	/Users/comet99/Documents/Code/QuestNav-ROS2/QuestSLAM-ros2/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/345f31q5/obj/arm64-v8a/libgame.so	f326bda76f3985ba
