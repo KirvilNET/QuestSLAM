@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Android;
 using TMPro;
 using System.Net;
 using System.Net.Sockets;
@@ -16,9 +15,6 @@ using nav_msgs = RosSharp.RosBridgeClient.MessageTypes.Nav;
 
 public class QuestSLAM : MonoBehaviour
 {
-    RosSocket socket;
-    RosConnector connector;
-
     public Vector3 headset_position;
     public Vector3 headset_eulerAngles;
     public Quaternion headset_rotation;
@@ -40,10 +36,14 @@ public class QuestSLAM : MonoBehaviour
     private string ip;
 
     private nav_msgs.Odometry odom;
-    std_msgs.Float32 battery;
+    private std_msgs.Float32 battery;
+    
+    RosSocket socket;
+    RosConnector connector;
 
-    private TouchScreenKeyboard overlayKeyboard;
-  
+    //private TouchScreenKeyboard overlayKeyboard;
+    //string Odompub_id;
+
     public void UpdateIPAddressText()
     {
         IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
@@ -141,8 +141,7 @@ public class QuestSLAM : MonoBehaviour
 
         };
 
-        string Odompub_id = socket.Advertise<nav_msgs.Odometry>("odom");
-        socket.Publish(Odompub_id, odom);
+       socket.Publish(socket.Advertise<nav_msgs.Odometry>("odom"), odom);
     }
 
 
@@ -154,24 +153,51 @@ public class QuestSLAM : MonoBehaviour
 
         };
 
-        string batteryPub = socket.Advertise<std_msgs.Float32>("battery_level");
+        //string batteryPub = ;
 
-        socket.Publish(batteryPub, battery);
+        socket.Publish(socket.Advertise<std_msgs.Float32>("battery_level"), battery);
     }
+
+    void getCommmandArgs()
+    {
+        #if UNITY_ANDROID && !UNITY_EDITOR
+        try
+        {
+            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
+            string commandLine = intent.Call<string>("getStringExtra", "ip");
+            //Debug.Log("Received command-line argument: " + commandLine);
+
+            
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("Failed to read command-line argument: " + e.Message);
+        }
+        #endif
+    }
+
+
 
     void Start()
     {
+        
+
         connector = GetComponent<RosConnector>();
-
-
         socket = connector.RosSocket;
 
         ros_ip.text = "ROS bridge: " + PlayerPrefs.GetString("ROSBRIDGEIP");
 
         UpdateIPAddressText();
 
+        getCommmandArgs();
+
+        connector.Awake();
+
         setButton.onClick.AddListener(SetNewBridgeIP);
-     
+
+        
         
     }
     void Update()
@@ -185,10 +211,10 @@ public class QuestSLAM : MonoBehaviour
         genTelemetry();
 
         //string Odompub_id = socket.Advertise<nav_msgs.Odometry>("odom");
-        string batteryPub = socket.Advertise<std_msgs.Float32>("battery_level");
+        //string batteryPub = socket.Advertise<std_msgs.Float32>("battery_level");
 
-        socket.Publish(batteryPub, battery);
-        //socket.Publish(Odompub_id, odom);
+        //socket.Publish(batteryPub, battery);
+        //socket.Publish(socket.Advertise<nav_msgs.Odometry>("odom"), odom);
 
     }
 
