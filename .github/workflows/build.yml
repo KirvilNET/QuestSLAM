@@ -1,4 +1,4 @@
-name: Build QuestNav App
+name: Build QuestSLAM App
 on:
   workflow_call:
     inputs:
@@ -55,9 +55,9 @@ jobs:
         id: version-info
         run: |
           # Check if all required version components are provided
-          if [ -n "${{ inputs.versionYear }}" ] && [ -n "${{ inputs.versionMajor }}" ] && [ -n "${{ inputs.versionMinor }}" ] && [ -n "${{ inputs.versionPatch }}" ]; then
+          if [ -n "[ -n "${{ inputs.versionMajor }}" ] && [ -n "${{ inputs.versionMinor }}" ] && [ -n "${{ inputs.versionPatch }}" ]; then
             # Use semantic versioning
-            VERSION="${{ inputs.versionYear }}.${{ inputs.versionMajor }}.${{ inputs.versionMinor }}.${{ inputs.versionPatch }}"
+            VERSION="${{ inputs.versionMajor }}.${{ inputs.versionMinor }}.${{ inputs.versionPatch }}"
             if [ -n "${{ inputs.versionType }}" ]; then
               VERSION="${VERSION}-${{ inputs.versionType }}"
             fi
