@@ -36,7 +36,7 @@ namespace RosSharp.RosBridgeClient
         public ManualResetEvent IsConnected { get; private set; }
 
 
-        public virtual void Awake()
+        public virtual void connect()
         {
             
             RosBridgeServerUrl = PlayerPrefs.GetString("ROSBRIDGEIP", "localhost");

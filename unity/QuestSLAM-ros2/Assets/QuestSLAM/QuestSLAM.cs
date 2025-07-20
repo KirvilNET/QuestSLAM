@@ -31,7 +31,7 @@ public class QuestSLAM : MonoBehaviour
     [SerializeField]
     private UnityEngine.UI.Button setButton;
 
-    private bool IsTracking;
+    //private bool IsTracking;
     private string myAddr;
     private string ip;
 
@@ -78,7 +78,7 @@ public class QuestSLAM : MonoBehaviour
             PlayerPrefs.Save();
             Debug.Log("Creating New ipsave");
             connector = GetComponent<RosConnector>();
-            connector.Awake();
+            connector.connect();
         }
         
     }
@@ -167,7 +167,13 @@ public class QuestSLAM : MonoBehaviour
             AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
             string commandLine = intent.Call<string>("getStringExtra", "ip");
-            //Debug.Log("Received command-line argument: " + commandLine);
+
+           
+
+            Debug.Log("Received command-line argument: " + commandLine);
+            PlayerPrefs.SetString("ROSBRIDGEIP", commandLine);
+            PlayerPrefs.Save();
+            
 
             
         }
@@ -176,16 +182,14 @@ public class QuestSLAM : MonoBehaviour
             Debug.LogError("Failed to read command-line argument: " + e.Message);
         }
         #endif
+
+       
     }
 
 
 
     void Start()
     {
-        
-
-        connector = GetComponent<RosConnector>();
-        socket = connector.RosSocket;
 
         ros_ip.text = "ROS bridge: " + PlayerPrefs.GetString("ROSBRIDGEIP");
 
@@ -193,8 +197,11 @@ public class QuestSLAM : MonoBehaviour
 
         getCommmandArgs();
 
-        connector.Awake();
+        connector = GetComponent<RosConnector>();
+        connector.connect();
 
+
+        
         setButton.onClick.AddListener(SetNewBridgeIP);
 
         
@@ -202,6 +209,8 @@ public class QuestSLAM : MonoBehaviour
     }
     void Update()
     {
+        socket = connector.RosSocket;
+
         headset_position = cameraRig.centerEyeAnchor.position;
         headset_rotation = cameraRig.centerEyeAnchor.rotation;
         headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
