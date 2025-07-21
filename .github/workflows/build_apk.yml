@@ -2,6 +2,10 @@ name: Build QuestSLAM App
 on:
   workflow_call:
     inputs:
+      versionYear:
+        description: 'Year'
+        required: false
+        type: string
       versionMajor:
         description: 'Major version'
         required: false
@@ -55,18 +59,19 @@ jobs:
         id: version-info
         run: |
           # Check if all required version components are provided
-          if [ -n "[ -n "${{ inputs.versionMajor }}" ] && [ -n "${{ inputs.versionMinor }}" ] && [ -n "${{ inputs.versionPatch }}" ]; then
+          if [ -n "${{ inputs.versionYear }}" ] && [ -n "${{ inputs.versionMajor }}" ] && [ -n "${{ inputs.versionMinor }}" ] && [ -n "${{ inputs.versionPatch }}" ]; then
             # Use semantic versioning
-            VERSION="${{ inputs.versionMajor }}.${{ inputs.versionMinor }}.${{ inputs.versionPatch }}"
+            VERSION="${{ inputs.versionYear }}.${{ inputs.versionMajor }}.${{ inputs.versionMinor }}.${{ inputs.versionPatch }}"
             if [ -n "${{ inputs.versionType }}" ]; then
               VERSION="${VERSION}-${{ inputs.versionType }}"
             fi
 
             # Calculate Android version code for semantic versioning
+            YEAR=${{ inputs.versionYear }}
             MAJOR=${{ inputs.versionMajor }}
             MINOR=${{ inputs.versionMinor }}
             PATCH=${{ inputs.versionPatch }}
-            VERSION_CODE=$(($MAJOR * 1000000 + $MINOR * 1000 + $PATCH ))
+            VERSION_CODE=$(( ($YEAR - 2020) * 100000000 + $MAJOR * 1000000 + $MINOR * 1000 + $PATCH ))
 
             echo "strategy=semantic" >> $GITHUB_OUTPUT
             echo "version=$VERSION" >> $GITHUB_OUTPUT
