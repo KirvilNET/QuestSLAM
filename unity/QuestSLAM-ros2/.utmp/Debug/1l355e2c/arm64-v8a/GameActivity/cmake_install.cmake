@@ -1,4 +1,4 @@
-# Install script for directory: /Users/comet99/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/PramData/AndroidApplicationController/Cache/com.kirvilnet.QuestSLAM/gradle-project/unityLibrary/src/main/cpp/GameActivity
+# Install script for directory: /Users/comet99/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
