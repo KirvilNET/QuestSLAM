@@ -1,0 +1,16 @@
+name: Build
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    branches:
+      - main
+
+jobs:
+  apk:
+    uses: KirvilNET/QuestSLAM/.github/workflows/build_apk.yml@main
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
