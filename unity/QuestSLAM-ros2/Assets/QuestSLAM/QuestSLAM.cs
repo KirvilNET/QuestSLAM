@@ -8,6 +8,10 @@ using RosSharp;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using geometry_msgs = RosSharp.RosBridgeClient.MessageTypes.Geometry;
 using nav_msgs = RosSharp.RosBridgeClient.MessageTypes.Nav;
+using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
+using System;
+using UnityEngine.XR.OpenXR.Input;
+using UnityEngine.XR.OpenXR;
 
 
 
@@ -26,25 +30,20 @@ public class QuestSLAM : MonoBehaviour
     private TMP_Text headset_ip;
     [SerializeField]
     private TMP_Text ros_ip;
-    [SerializeField]
-    private TMP_InputField IPinput;
-    [SerializeField]
-    private UnityEngine.UI.Button setButton;
-
     //private bool IsTracking;
     private string myAddr;
     private string ip;
 
     private nav_msgs.Odometry odom;
     private std_msgs.Float32 battery;
-    
+
     RosSocket socket;
     RosConnector connector;
 
     //private TouchScreenKeyboard overlayKeyboard;
     //string Odompub_id;
 
-    public void UpdateIPAddressText()
+   public void UpdateIPAddressText()
     {
         IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
         foreach (IPAddress ip in hostEntry.AddressList)
@@ -66,22 +65,6 @@ public class QuestSLAM : MonoBehaviour
         }
     }
 
-    public void SetNewBridgeIP()
-    {
-        
-        PlayerPrefs.SetString("ROSBRIDGEIP", IPinput.text);
-        
-        ip = IPinput.text;
-        
-        if (ip != PlayerPrefs.GetString("ROSBRIDGEIP"))
-        {
-            PlayerPrefs.Save();
-            Debug.Log("Creating New ipsave");
-            connector = GetComponent<RosConnector>();
-            connector.connect();
-        }
-        
-    }
 
 
     void genOdomMsgs()
@@ -141,7 +124,7 @@ public class QuestSLAM : MonoBehaviour
 
         };
 
-       socket.Publish(socket.Advertise<nav_msgs.Odometry>("odom"), odom);
+        socket.Publish(socket.Advertise<nav_msgs.Odometry>("QuestSLAM/odom"), odom);
     }
 
 
@@ -149,13 +132,13 @@ public class QuestSLAM : MonoBehaviour
     {
         battery = new std_msgs.Float32
         {
-            data = SystemInfo.batteryLevel
+            data = SystemInfo.batteryLevel 
 
         };
 
-        //string batteryPub = ;
-
-        socket.Publish(socket.Advertise<std_msgs.Float32>("battery_level"), battery);
+        
+        
+        socket.Publish(socket.Advertise<std_msgs.Float32>("QuestSLAM/battery_level"), battery);
     }
 
     void getCommmandArgs()
@@ -183,9 +166,27 @@ public class QuestSLAM : MonoBehaviour
         }
         #endif
 
-       
+
     }
 
+    private static bool posResetServiceHandler(rosapi.GetParamRequest request, out rosapi.GetParamResponse response)
+    {
+        Debug.Log("recived request: " + request.name);
+
+        response = new rosapi.GetParamResponse
+        {
+            value = "Reseting Position"
+        };
+
+        
+
+        return true;
+    }
+
+    void genService()
+    {
+        socket.AdvertiseService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/QuestSLAM/posReset", posResetServiceHandler);
+    }
 
 
     void Start()
@@ -200,12 +201,6 @@ public class QuestSLAM : MonoBehaviour
         connector = GetComponent<RosConnector>();
         connector.connect();
 
-
-        
-        setButton.onClick.AddListener(SetNewBridgeIP);
-
-        
-        
     }
     void Update()
     {
@@ -219,12 +214,15 @@ public class QuestSLAM : MonoBehaviour
         genOdomMsgs();
         genTelemetry();
 
-        //string Odompub_id = socket.Advertise<nav_msgs.Odometry>("odom");
-        //string batteryPub = socket.Advertise<std_msgs.Float32>("battery_level");
+        
 
-        //socket.Publish(batteryPub, battery);
-        //socket.Publish(socket.Advertise<nav_msgs.Odometry>("odom"), odom);
+    }
 
+    void OnApplicationQuit()
+    {
+        socket.Unadvertise("QuestSLAM/odom");
+        socket.Unadvertise("QuestSLAM/battery_level");
+        //socket.Unadvertise()
     }
 
 }

@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/Users/comet99/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/Debug/1l355e2c/obj/arm64-v8a/libgame.so"
+			"path" : "/Users/comet99/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/PramData/AndroidApplicationController/Cache/com.kirvilnet.QuestSLAM/gradle-project/unityLibrary/build/intermediates/cxx/Debug/1l355e2c/obj/arm64-v8a/libgame.so"
 		}
 	],
 	"backtrace" : 1,
@@ -73,7 +73,7 @@
 			[
 				{
 					"backtrace" : 4,
-					"path" : "/Users/comet99/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp/GameActivity"
+					"path" : "/Users/comet99/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/PramData/AndroidApplicationController/Cache/com.kirvilnet.QuestSLAM/gradle-project/unityLibrary/src/main/cpp/GameActivity"
 				},
 				{
 					"backtrace" : 2,
