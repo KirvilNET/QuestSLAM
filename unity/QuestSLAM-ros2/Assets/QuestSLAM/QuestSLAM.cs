@@ -65,9 +65,6 @@ namespace QuestSLAM.Manager
                 break;
             }
         }
-
-
-
         void genOdomMsgs()
         {
             odom = new nav_msgs.Odometry
