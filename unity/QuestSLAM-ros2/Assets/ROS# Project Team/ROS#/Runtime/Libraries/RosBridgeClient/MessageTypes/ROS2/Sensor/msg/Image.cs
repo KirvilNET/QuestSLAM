@@ -9,6 +9,7 @@
 
 #if ROS2
 
+using System;
 using RosSharp.RosBridgeClient.MessageTypes.Std;
 
 namespace RosSharp.RosBridgeClient.MessageTypes.Sensor

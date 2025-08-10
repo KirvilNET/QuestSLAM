@@ -5,224 +5,218 @@ using System.Net.Sockets;
 
 using RosSharp.RosBridgeClient;
 using RosSharp;
+
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using geometry_msgs = RosSharp.RosBridgeClient.MessageTypes.Geometry;
 using nav_msgs = RosSharp.RosBridgeClient.MessageTypes.Nav;
 using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
-using System;
-using UnityEngine.XR.OpenXR.Input;
-using UnityEngine.XR.OpenXR;
+
+
+using PassthroughCameraSamples;
+using UnityEngine.UI;
+using QuestSLAM.vision;
+using QuestSLAM.ServiceHandler;
 
 
 
-
-
-public class QuestSLAM : MonoBehaviour
+namespace QuestSLAM.Manager
 {
-    public Vector3 headset_position;
-    public Vector3 headset_eulerAngles;
-    public Quaternion headset_rotation;
-    public Vector3 headset_angular;
-    public Vector3 headset_linear;
-    [SerializeField]
-    private OVRCameraRig cameraRig;
-    [SerializeField]
-    private TMP_Text headset_ip;
-    [SerializeField]
-    private TMP_Text ros_ip;
-    //private bool IsTracking;
-    private string myAddr;
-    private string ip;
-
-    private nav_msgs.Odometry odom;
-    private std_msgs.Float32 battery;
-
-    RosSocket socket;
-    RosConnector connector;
-
-    //private TouchScreenKeyboard overlayKeyboard;
-    //string Odompub_id;
-
-   public void UpdateIPAddressText()
+    public class QuestSLAMManager : MonoBehaviour
     {
-        IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-        foreach (IPAddress ip in hostEntry.AddressList)
+        public Vector3 headset_position;
+        public Vector3 headset_eulerAngles;
+        public Quaternion headset_rotation;
+        public Vector3 headset_angular;
+        public Vector3 headset_linear;
+        [SerializeField] private OVRCameraRig cameraRig;
+        [SerializeField] private TMP_Text headset_ip;
+        [SerializeField] private TMP_Text ros_ip;
+        [SerializeField] WebCamTextureManager webCamTexture;
+        [SerializeField] RawImage image;
+        private string myAddr;
+        private string ip;
+
+        private nav_msgs.Odometry odom;
+        private std_msgs.Float32 battery;
+
+        RosSocket socket;
+        RosConnector connector;
+        TagManagaer tagManagaer;
+        
+
+        public void UpdateIPAddressText()
         {
-            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in hostEntry.AddressList)
             {
-                myAddr = ip.ToString();
-                TextMeshProUGUI ipText = headset_ip as TextMeshProUGUI;
-                if (myAddr == "127.0.0.1")
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    headset_ip.text = "No Adapter Found";
+                    myAddr = ip.ToString();
+                    TextMeshProUGUI ipText = headset_ip as TextMeshProUGUI;
+                    if (myAddr == "127.0.0.1")
+                    {
+                        headset_ip.text = "No Adapter Found";
+                    }
+                    else
+                    {
+                        headset_ip.text = "ip: " + myAddr;
+                    }
                 }
-                else
-                {
-                    headset_ip.text = "ip: " + myAddr;
-                }
+                break;
             }
-            break;
         }
-    }
 
 
 
-    void genOdomMsgs()
-    {
-        odom = new nav_msgs.Odometry
+        void genOdomMsgs()
         {
-            header = new std_msgs.Header
+            odom = new nav_msgs.Odometry
             {
-                frame_id = "odom",
-                stamp = new RosSharp.RosBridgeClient.MessageTypes.BuiltinInterfaces.Time
+                header = new std_msgs.Header
                 {
-                    nanosec = (uint)UnityEngine.Time.time * 1000,
-                    sec = (int)UnityEngine.Time.time
-                }
-            },
-            child_frame_id = "base_link",
-            pose = new geometry_msgs.PoseWithCovariance
-            {
-                pose = new geometry_msgs.Pose
-                {
-                    position = new geometry_msgs.Point
+                    frame_id = "odom",
+                    stamp = new RosSharp.RosBridgeClient.MessageTypes.BuiltinInterfaces.Time
                     {
-                        x = headset_position.Unity2Ros().x,
-                        y = headset_position.Unity2Ros().y,
-                        z = headset_position.Unity2Ros().z
-                    },
-                    orientation = new geometry_msgs.Quaternion
-                    {
-                        x = headset_rotation.Unity2Ros().x,
-                        y = headset_rotation.Unity2Ros().y,
-                        z = headset_rotation.Unity2Ros().z,
-                        w = headset_rotation.Unity2Ros().w
+                        nanosec = (uint)UnityEngine.Time.time * 1000,
+                        sec = (int)UnityEngine.Time.time
                     }
                 },
-                covariance = new double[36]
-            },
-            twist = new geometry_msgs.TwistWithCovariance
-            {
-                twist = new geometry_msgs.Twist
+                child_frame_id = "base_link",
+                pose = new geometry_msgs.PoseWithCovariance
                 {
-                    linear = new geometry_msgs.Vector3
+                    pose = new geometry_msgs.Pose
                     {
-                        x = headset_linear.Unity2Ros().x,
-                        y = headset_linear.Unity2Ros().y,
-                        z = headset_linear.Unity2Ros().z,
+                        position = new geometry_msgs.Point
+                        {
+                            x = headset_position.Unity2Ros().x,
+                            y = headset_position.Unity2Ros().y,
+                            z = headset_position.Unity2Ros().z
+                        },
+                        orientation = new geometry_msgs.Quaternion
+                        {
+                            x = headset_rotation.Unity2Ros().x,
+                            y = headset_rotation.Unity2Ros().y,
+                            z = headset_rotation.Unity2Ros().z,
+                            w = headset_rotation.Unity2Ros().w
+                        }
                     },
-                    angular = new geometry_msgs.Vector3
-                    {
-                        x = headset_angular.Unity2Ros().x,
-                        y = headset_angular.Unity2Ros().y,
-                        z = headset_angular.Unity2Ros().z,
-                    }
-
+                    covariance = new double[36]
                 },
-                covariance = new double[36]
+                twist = new geometry_msgs.TwistWithCovariance
+                {
+                    twist = new geometry_msgs.Twist
+                    {
+                        linear = new geometry_msgs.Vector3
+                        {
+                            x = headset_linear.Unity2Ros().x,
+                            y = headset_linear.Unity2Ros().y,
+                            z = headset_linear.Unity2Ros().z,
+                        },
+                        angular = new geometry_msgs.Vector3
+                        {
+                            x = headset_angular.Unity2Ros().x,
+                            y = headset_angular.Unity2Ros().y,
+                            z = headset_angular.Unity2Ros().z,
+                        }
+
+                    },
+                    covariance = new double[36]
+                }
+
+            };
+
+            socket.Publish(socket.Advertise<nav_msgs.Odometry>("QuestSLAM/odom"), odom);
+        }
+
+
+        void genTelemetry()
+        {
+            battery = new std_msgs.Float32
+            {
+                data = SystemInfo.batteryLevel * 100
+
+            };
+
+
+
+            socket.Publish(socket.Advertise<std_msgs.Float32>("QuestSLAM/battery_level"), battery);
+        }
+
+        void getCommmandArgs()
+        {
+            #if UNITY_ANDROID && !UNITY_EDITOR
+            try
+            {
+                AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+                AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
+                string commandLine = intent.Call<string>("getStringExtra", "ip");
+
+
+
+                Debug.Log("Received command-line argument: " + commandLine);
+                PlayerPrefs.SetString("ROSBRIDGEIP", commandLine);
+                PlayerPrefs.Save();
+
+
+
             }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Failed to read command-line argument: " + e.Message);
+            }
+            #endif
 
-        };
 
-        socket.Publish(socket.Advertise<nav_msgs.Odometry>("QuestSLAM/odom"), odom);
-    }
+        }
 
 
-    void genTelemetry()
-    {
-        battery = new std_msgs.Float32
+
+        void Start()
         {
-            data = SystemInfo.batteryLevel 
 
-        };
+            ros_ip.text = "ROS bridge: " + PlayerPrefs.GetString("ROSBRIDGEIP");
 
-        
-        
-        socket.Publish(socket.Advertise<std_msgs.Float32>("QuestSLAM/battery_level"), battery);
-    }
+            UpdateIPAddressText();
 
-    void getCommmandArgs()
-    {
-        #if UNITY_ANDROID && !UNITY_EDITOR
-        try
+            getCommmandArgs();
+
+            connector = GetComponent<RosConnector>();
+            tagManagaer = GetComponent<TagManagaer>();
+
+            connector.connect();
+
+            tagManagaer.genService(connector.RosSocket);
+
+        }
+        void Update()
         {
-            AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-            AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
-            string commandLine = intent.Call<string>("getStringExtra", "ip");
+            socket = connector.RosSocket;
 
-           
-
-            Debug.Log("Received command-line argument: " + commandLine);
-            PlayerPrefs.SetString("ROSBRIDGEIP", commandLine);
-            PlayerPrefs.Save();
+            headset_position = cameraRig.centerEyeAnchor.position;
+            headset_rotation = cameraRig.centerEyeAnchor.rotation;
+            headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
             
+            genOdomMsgs();
+            genTelemetry();
+            
+
+            if (webCamTexture.enabled != false)
+            {
+                tagManagaer.detectAprialTag();
+            }
+            
+            
+            
+
+        }
+
+        void OnApplicationQuit()
+        {
+            socket.Unadvertise("QuestSLAM/odom");
+            socket.Unadvertise("QuestSLAM/battery_level");
 
             
         }
-        catch (System.Exception e)
-        {
-            Debug.LogError("Failed to read command-line argument: " + e.Message);
-        }
-        #endif
-
-
     }
-
-    private static bool posResetServiceHandler(rosapi.GetParamRequest request, out rosapi.GetParamResponse response)
-    {
-        Debug.Log("recived request: " + request.name);
-
-        response = new rosapi.GetParamResponse
-        {
-            value = "Reseting Position"
-        };
-
-        
-
-        return true;
-    }
-
-    void genService()
-    {
-        socket.AdvertiseService<rosapi.GetParamRequest, rosapi.GetParamResponse>("/QuestSLAM/posReset", posResetServiceHandler);
-    }
-
-
-    void Start()
-    {
-
-        ros_ip.text = "ROS bridge: " + PlayerPrefs.GetString("ROSBRIDGEIP");
-
-        UpdateIPAddressText();
-
-        getCommmandArgs();
-
-        connector = GetComponent<RosConnector>();
-        connector.connect();
-
-    }
-    void Update()
-    {
-        socket = connector.RosSocket;
-
-        headset_position = cameraRig.centerEyeAnchor.position;
-        headset_rotation = cameraRig.centerEyeAnchor.rotation;
-        headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
-
-
-        genOdomMsgs();
-        genTelemetry();
-
-        
-
-    }
-
-    void OnApplicationQuit()
-    {
-        socket.Unadvertise("QuestSLAM/odom");
-        socket.Unadvertise("QuestSLAM/battery_level");
-        //socket.Unadvertise()
-    }
-
 }
