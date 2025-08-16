@@ -193,18 +193,15 @@ namespace QuestSLAM.Manager
             headset_position = cameraRig.centerEyeAnchor.position;
             headset_rotation = cameraRig.centerEyeAnchor.rotation;
             headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
-            
+
             genOdomMsgs();
             genTelemetry();
-            
+
 
             if (webCamTexture.enabled != false)
             {
                 tagManagaer.detectAprialTag();
             }
-            
-            
-            
 
         }
 
