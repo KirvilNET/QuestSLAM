@@ -14,7 +14,6 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 using PassthroughCameraSamples;
 using UnityEngine.UI;
-using QuestSLAM.vision;
 using QuestSLAM.ServiceHandler;
 
 
@@ -41,7 +40,6 @@ namespace QuestSLAM.Manager
 
         RosSocket socket;
         RosConnector connector;
-        TagManagaer tagManagaer;
         
 
         public void UpdateIPAddressText()
@@ -65,6 +63,7 @@ namespace QuestSLAM.Manager
                 break;
             }
         }
+        
         void genOdomMsgs()
         {
             odom = new nav_msgs.Odometry
@@ -72,10 +71,10 @@ namespace QuestSLAM.Manager
                 header = new std_msgs.Header
                 {
                     frame_id = "odom",
-                    stamp = new RosSharp.RosBridgeClient.MessageTypes.BuiltinInterfaces.Time
+                    stamp = new RosSharp.RosBridgeClient.MessageTypes.Std.Time
                     {
-                        nanosec = (uint)UnityEngine.Time.time * 1000,
-                        sec = (int)UnityEngine.Time.time
+                        nsecs = (uint)UnityEngine.Time.time * 1000,
+                        secs = (uint)UnityEngine.Time.time
                     }
                 },
                 child_frame_id = "base_link",
@@ -179,11 +178,8 @@ namespace QuestSLAM.Manager
             getCommmandArgs();
 
             connector = GetComponent<RosConnector>();
-            tagManagaer = GetComponent<TagManagaer>();
 
             connector.connect();
-
-            tagManagaer.genService(connector.RosSocket);
 
         }
         void Update()
@@ -197,11 +193,6 @@ namespace QuestSLAM.Manager
             genOdomMsgs();
             genTelemetry();
 
-
-            if (webCamTexture.enabled != false)
-            {
-                tagManagaer.detectAprialTag();
-            }
 
         }
 

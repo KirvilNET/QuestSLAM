@@ -7,8 +7,6 @@ using geometry_msgs = RosSharp.RosBridgeClient.MessageTypes.Geometry;
 using nav_msgs = RosSharp.RosBridgeClient.MessageTypes.Nav;
 using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
-using QuestSLAM.vision;
-
 
 
 namespace QuestSLAM.ServiceHandler
