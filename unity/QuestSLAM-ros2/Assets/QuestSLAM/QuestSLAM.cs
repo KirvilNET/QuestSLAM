@@ -71,10 +71,10 @@ namespace QuestSLAM.Manager
                 header = new std_msgs.Header
                 {
                     frame_id = "odom",
-                    stamp = new RosSharp.RosBridgeClient.MessageTypes.Std.Time
+                    stamp = new RosSharp.RosBridgeClient.MessageTypes.BuiltinInterfaces.Time
                     {
-                        nsecs = (uint)UnityEngine.Time.time * 1000,
-                        secs = (uint)UnityEngine.Time.time
+                        nanosec = (uint)UnityEngine.Time.time * 1000,
+                        sec = (int)UnityEngine.Time.time
                     }
                 },
                 child_frame_id = "base_link",
