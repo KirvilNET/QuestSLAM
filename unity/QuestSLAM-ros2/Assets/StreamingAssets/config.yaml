@@ -1,0 +1,6 @@
+headsetID: 2
+rosConnectionIP: 0.0.0.0
+trackingspeed: 120
+toggleCamera: false
+autoStart: false
+aprilTagTracking: false

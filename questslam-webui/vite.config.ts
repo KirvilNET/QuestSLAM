@@ -16,7 +16,7 @@ export default defineConfig({
   
   // Build configuration
   build: {
-    outDir: '../unity/QuestSLAM-ros2/Assets/StreamingAssets/ui',
+    outDir: '../unity/QuestSLAM-ros2/Assets/StreamingAssets/web',
     emptyOutDir: true,
     assetsDir: 'assets',
     rollupOptions: {
@@ -36,7 +36,7 @@ export default defineConfig({
   
   // Development server configuration
   server: {
-    port: 5173,
+    port: 9000
   },
   
   // Path resolution

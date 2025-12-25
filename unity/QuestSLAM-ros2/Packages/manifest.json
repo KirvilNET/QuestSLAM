@@ -1,7 +1,6 @@
 {
   "dependencies": {
-    "com.endel.nativewebsocket": "https://github.com/endel/NativeWebSocket.git#upm",
-    "com.firedragongamestudio.simplewebrtc": "https://github.com/FireDragonGameStudio/SimpleWebRTC.git?path=/Assets/SimpleWebRTC",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.meta.xr.sdk.core": "77.0.0",
     "com.meta.xr.sdk.interaction": "77.0.0",
     "com.meta.xr.sdk.interaction.ovr": "77.0.0",

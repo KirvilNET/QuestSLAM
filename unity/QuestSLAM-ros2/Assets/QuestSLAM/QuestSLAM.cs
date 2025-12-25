@@ -1,7 +1,11 @@
 using UnityEngine;
-using TMPro;
+using UnityEngine.Profiling;
+using UnityEngine.UIElements;
+
 using System.Net;
 using System.Net.Sockets;
+using System;
+
 
 using RosSharp.RosBridgeClient;
 using RosSharp;
@@ -14,8 +18,12 @@ using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
 
 using PassthroughCameraSamples;
 using UnityEngine.UI;
-using QuestSLAM.ServiceHandler;
 
+using QuestSLAM.sim;
+using QuestSLAM.web.server;
+using QuestSLAM.web.dataschema;
+using QuestSLAM.config;
+using QuestSLAM.Utils;
 
 
 namespace QuestSLAM.Manager
@@ -27,20 +35,31 @@ namespace QuestSLAM.Manager
         public Quaternion headset_rotation;
         public Vector3 headset_angular;
         public Vector3 headset_linear;
+        public int headsetID = 0;
+        public bool sim = false;
+
         [SerializeField] private OVRCameraRig cameraRig;
-        [SerializeField] private TMP_Text headset_ip;
-        [SerializeField] private TMP_Text ros_ip;
-        [SerializeField] WebCamTextureManager webCamTexture;
-        [SerializeField] RawImage image;
+        [SerializeField] private UIDocument ui;
+        private Label dashboardText;
+        private Label IPText;
+
         private string myAddr;
-        private string ip;
 
         private nav_msgs.Odometry odom;
         private std_msgs.Float32 battery;
 
         RosSocket socket;
         RosConnector connector;
-        
+
+        private Utils.System sys;
+        private SITL sitl;
+        private webserver server;
+        private ConfigManager config;
+
+        private TelemetryPacket Tpacket;
+
+        private float updateInterval = 1f / 30f;
+        private float timeSinceLastUpdate = 0f;
 
         public void UpdateIPAddressText()
         {
@@ -50,14 +69,22 @@ namespace QuestSLAM.Manager
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
                     myAddr = ip.ToString();
-                    TextMeshProUGUI ipText = headset_ip as TextMeshProUGUI;
+                    VisualElement root = ui.rootVisualElement;
+
+                    VisualElement TextContainer = root.Q<VisualElement>("UI").Q<VisualElement>("Container").Q<VisualElement>("TextContainer");
+
+                    dashboardText = TextContainer.Q<Label>("Dashboard");
+                    IPText = TextContainer.Q<Label>("IP");
+
                     if (myAddr == "127.0.0.1")
                     {
-                        headset_ip.text = "No Adapter Found";
+                        IPText.text = "No Adapter Found";
+                        dashboardText.text = "Dashboard being hosted on http://localhost:9234";
                     }
                     else
                     {
-                        headset_ip.text = "ip: " + myAddr;
+                        IPText.text = $"IP: {myAddr}";
+                        dashboardText.text = $"Dashboard being hosted on http://{myAddr}:9234";
                     }
                 }
                 break;
@@ -125,7 +152,7 @@ namespace QuestSLAM.Manager
         }
 
 
-        void genTelemetry()
+        void genROSTelemetry()
         {
             battery = new std_msgs.Float32
             {
@@ -133,75 +160,134 @@ namespace QuestSLAM.Manager
 
             };
 
-
-
             socket.Publish(socket.Advertise<std_msgs.Float32>("QuestSLAM/battery_level"), battery);
         }
 
         void getCommmandArgs()
         {
             #if UNITY_ANDROID && !UNITY_EDITOR
-            try
+                try
+                {
+                    AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                    AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+                    AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
+                    string commandLine = intent.Call<string>("getStringExtra", "ip");
+
+                    QueuedLogger.Log("Received command-line argument: " + commandLine);
+                    PlayerPrefs.SetString("ROSBRIDGEIP", commandLine);
+                    PlayerPrefs.Save();
+                }
+                catch (System.Exception e)
+                {
+                    QueuedLogger.LogError("Failed to read command-line argument: " + e.Message);
+                }
+            #endif
+        }
+
+        // 30hz update
+        void SlowUpdate()
+        {
+            Tpacket = new TelemetryPacket
             {
-                AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-                AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-                AndroidJavaObject intent = currentActivity.Call<AndroidJavaObject>("getIntent");
-                string commandLine = intent.Call<string>("getStringExtra", "ip");
+               connectionStatus = sim ? true : connector.IsConnected.WaitOne(0),
+               batteryPercentage = sim ? sitl.GetSimulatedBattery() : SystemInfo.batteryLevel * 100,
+               headsetID = headsetID,
+               rosConnectionIP = sim ? "SIMULATION MODE" :connector.RosBridgeServerUrl,
+               rosTime = UnityEngine.Time.time,
+               cpu = sim ? sitl.GetSimulatedCpu() : sys.GetCpuUsage(),
+               mem = sim ? sitl.GetSimulatedMemory() : Profiler.GetTotalAllocatedMemoryLong(),
+               temp = sim ? sitl.GetSimulatedTemp() : sys.GetCpuTempCelsius(),
+               isTracking = sim ? true : sys.HasValidHeadPose(),
+               trackingspeed = sys.TrackingSpeed(),
+               fps =  sim ? sitl.GetSimulatedFps() : 1f / Time.deltaTime,
+               pose = new web.dataschema.Pose
+               {
+                   pos = new web.dataschema.Vec3
+                   {
+                       x = headset_position.Unity2Ros().x,
+                       y = headset_position.Unity2Ros().y,
+                       z = headset_position.Unity2Ros().z
+                   },
+                   rot = new web.dataschema.Quat
+                   {
+                       x = headset_rotation.Unity2Ros().x,
+                       y = headset_rotation.Unity2Ros().y,
+                       z = headset_rotation.Unity2Ros().z,
+                       w = headset_rotation.Unity2Ros().w
+                   }
+               }
+            };
+
+            server.SendTelemetry(Tpacket);
+            QueuedLogger.Flush();
+            
+        }
+            
 
 
+        void MainUpdate()
+        {
+            #if UNITY_ANDROID && !UNITY_EDITOR
+                socket = connector.RosSocket;
+        
+                headset_position = cameraRig.centerEyeAnchor.position;
+                headset_rotation = cameraRig.centerEyeAnchor.rotation;
+                headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
 
-                Debug.Log("Received command-line argument: " + commandLine);
-                PlayerPrefs.SetString("ROSBRIDGEIP", commandLine);
-                PlayerPrefs.Save();
-
-
-
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError("Failed to read command-line argument: " + e.Message);
-            }
+                genOdomMsgs();
+                genROSTelemetry();
+    
             #endif
 
+            #if UNITY_EDITOR 
+                sim = true;
 
+                headset_position = sitl.GetSimulatedPos();
+                headset_eulerAngles = sitl.GetSimulatedEulerAngles();
+                headset_rotation = sitl.GetSimulatedRot(headset_eulerAngles);
+                
+            #endif
+            
         }
 
-
-
-        void Start()
+        private async void Awake()
         {
-
-            ros_ip.text = "ROS bridge: " + PlayerPrefs.GetString("ROSBRIDGEIP");
-
             UpdateIPAddressText();
-
+           
             getCommmandArgs();
 
-            connector = GetComponent<RosConnector>();
+            sitl = GetComponent<SITL>();
+            sys = new Utils.System();
+            QueuedLogger logger = new QueuedLogger();
+            config = new ConfigManager();
 
-            connector.connect();
+            #if UNITY_ANDROID && !UNITY_EDITOR
+                connector = GetComponent<RosConnector>();
+                connector.connect();
+            #endif
 
-        }
-        void Update()
-        {
-            socket = connector.RosSocket;
+            try {
+                server = GetComponent<webserver>();
 
-            headset_position = cameraRig.centerEyeAnchor.position;
-            headset_rotation = cameraRig.centerEyeAnchor.rotation;
-            headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
+                server.StartServer(config);
+            }
+            catch (Exception e) 
+            {
+                QueuedLogger.Log($"Failed to start QuestSLAM WebUI Error: {e}");
+            }
 
-            genOdomMsgs();
-            genTelemetry();
+            config.Init();
+            logger.Init();
 
+            InvokeRepeating(nameof(SlowUpdate), 0, 1f / 3);
+            InvokeRepeating(nameof(MainUpdate), 0, 1f / 120);
 
         }
 
         void OnApplicationQuit()
         {
             socket.Unadvertise("QuestSLAM/odom");
-            socket.Unadvertise("QuestSLAM/battery_level");
-
-            
+            socket.Unadvertise("QuestSLAM/battery_level");  
         }
     }
 }

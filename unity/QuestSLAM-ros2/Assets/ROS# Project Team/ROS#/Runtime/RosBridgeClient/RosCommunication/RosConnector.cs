@@ -35,10 +35,8 @@ namespace RosSharp.RosBridgeClient
 
         public ManualResetEvent IsConnected { get; private set; }
 
-
         public virtual void connect()
-        {
-            
+        { 
             RosBridgeServerUrl = PlayerPrefs.GetString("ROSBRIDGEIP", "localhost");
             IsConnected = new ManualResetEvent(false);
             new Thread(ConnectAndWait).Start();

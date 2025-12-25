@@ -1,7 +1,7 @@
 {
   "name": "questslam-webui",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,6 +12,7 @@
     "@floating-ui/dom": "^1.7.4",
     "@preline/dropdown": "^3.2.3",
     "@tailwindcss/vite": "^4.1.18",
+    "@tweenjs/tween.js": "^25.0.0",
     "@types/three": "^0.182.0",
     "primevue": "^4.5.4",
     "tailwindcss": "^4.1.18",

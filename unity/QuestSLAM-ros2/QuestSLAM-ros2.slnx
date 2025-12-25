@@ -1,0 +1,5 @@
+﻿<Solution>
+  <Project Path="siemens.ros-sharp.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="siemens.ros-sharp.Editor.csproj" />
+</Solution>

@@ -1,18 +1,21 @@
-<script setup>
+<script setup lang="ts">
   import { ref, onMounted } from 'vue'
 
-  const status = ref(false)
+  const props = defineProps<{
+    connectionStatus: boolean
+    batteryPercentage: number
+  }>()
+
   const statustext = ref("Waiting")
-  const battery = ref(73)
 
   onMounted(() => {
-    if (status.value === true) {
-      document.getElementById("connection").classList.add('bg-[#66ffcc]')
-      document.getElementById("connection").classList.add('text-[#000000]')
+    if (props.connectionStatus === true) {
+      document.getElementById("connection")!.classList.add('bg-[#66ffcc]')
+      document.getElementById("connection")!.classList.add('text-[#000000]')
       statustext.value = "Connected"
     } else {
-      document.getElementById("connection").classList.add('bg-[#ff0000]')
-      document.getElementById("connection").classList.add('text-[#ffffff]')
+      document.getElementById("connection")!.classList.add('bg-[#ff0000]')
+      document.getElementById("connection")!.classList.add('text-[#ffffff]')
       statustext.value = "Disconnected"
     }
   })
@@ -44,9 +47,9 @@
               <span id="connection" class=" ml-2 px-3 py-1 rounded-full text-xs bg-panel2 text-center">{{ statustext }}</span>
               <div class="bg-panel2 rounded-xl p-3 md:w-32 text-center">
                 <div class="relative h-6 w-full bg-[#575757] rounded-full overflow-hidden">
-                  <div class="absolute top-0 left-0 h-6 bg-[#00ffaa] transition-all" :style="{ width: battery + '%' }"></div>
+                  <div class="absolute top-0 left-0 h-6 bg-[#00ffaa] transition-all" :style="{ width: props.batteryPercentage + '%' }"></div>
                   <div class="absolute inset-0 flex items-center justify-center">
-                    <p class="text-[#ffffff] text-sm font-semibold mb-0.5 drop-shadow-sm">{{ battery }}%</p>
+                    <p class="text-[#ffffff] text-sm font-semibold mb-0.5 drop-shadow-sm">{{ props.batteryPercentage }}%</p>
                   </div>
                 </div>
               </div>
