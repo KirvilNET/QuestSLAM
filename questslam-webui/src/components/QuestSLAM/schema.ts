@@ -8,6 +8,14 @@ export interface Config {
     AprilTagFamily: string
 }
 
+export interface AppInfo {
+    AppVersion: string
+    AppName: string
+    BuildDate: string
+    HorisionOSVersion: string
+    UnityVersion: string
+    DeviceModel: string
+}
 
 export type Telemetry  = {
     connectionStatus: boolean;

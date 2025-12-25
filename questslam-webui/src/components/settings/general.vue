@@ -3,9 +3,10 @@
     import { save, resetToDefault, ExportConfig, ImportConfig } from '../QuestSLAM/settings';
     import type { Config } from '../QuestSLAM/schema.ts'
 
+    const fileInput = ref<HTMLInputElement>()
+
     const props = defineProps<{
         currentConfig: Config;
-        serverConfig: Config;
     }>();
 
 </script>
@@ -18,10 +19,10 @@
             <div class="mt-2">
                 <div class="flex flex-col gap-2">
                     <label for="headsetID" class="text-white">Headset ID</label>
-                    <input v-model="props.currentConfig.headsetID" :placeholder="props.serverConfig.headsetID.toString()" type="text" id="headsetID" class="border-b border-[#8c52ff] text-white">
+                    <input v-model="props.currentConfig.headsetID" type="text" id="headsetID" class="border-b border-[#8c52ff] text-white">
 
                     <label for="rosConnectionIP" class="text-white">ROS Connection IP</label>
-                    <input v-model="props.currentConfig.rosConnectionIP" :placeholder="props.serverConfig.rosConnectionIP" type="text" id="rosConnectionIP" class="border-b border-[#8c52ff] text-white">
+                    <input v-model="props.currentConfig.rosConnectionIP" type="text" id="rosConnectionIP" class="border-b border-[#8c52ff] text-white">
 
                     <div class="relative mb-6">
                         <label for="trackingSpeed" class="block mb-2.5 text-white">Tracking Speed: {{ props.currentConfig.trackingspeed }}hz</label>
@@ -46,8 +47,9 @@
         <div class="flex-col p-2">
             <h1 class="text-white text-2xl mb-4">Import/Export</h1>
             <div class="flex gap-2">
+                <input ref="fileInput" type="file" accept=".json" @change="ImportConfig" hidden/>
                 <button class="px-4 py-2 text-white bg-[#8c52ff] hover:bg-[#ab79ff] rounded-lg font-semibold transition-colors" @click="ExportConfig">Export Config</button>
-                <button class="px-4 py-2 text-white bg-[#8c52ff] hover:bg-[#ab79ff] rounded-lg font-semibold transition-colors" @click="ImportConfig">Import Config From File</button>
+                <button class="px-4 py-2 text-white bg-[#8c52ff] hover:bg-[#ab79ff] rounded-lg font-semibold transition-colors" @click="fileInput?.click()">Import Config From File</button>
             </div>
             
         </div>

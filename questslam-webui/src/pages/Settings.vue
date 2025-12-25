@@ -1,6 +1,6 @@
 <script setup>
   import { ref, onMounted, watch } from 'vue'
-  import { fetchConfig, currentConfig, serverConfig } from '../components/QuestSLAM/settings.ts';
+  import { fetchConfig, currentConfig } from '../components/QuestSLAM/settings.ts';
 
   const activeTab = ref('general')
 
@@ -9,25 +9,20 @@
     { id: 'camera', label: 'Cameras' },
     { id: 'plugins', label: 'Plugins' },
     { id: 'about', label: 'About' },
-    { id: 'developer', label: 'Developer' },
   ]
-
-  onMounted( () => {
-    fetchConfig()
-  });
 
 </script>
 
 <template>
   <div class="flex justify-center items-center h-screen w-full">
-    <div class="h-100% w-200 rounded-2xl bg-[#282828]" >
+    <div class="h-90% w-200 rounded-2xl bg-[#282828]">
       <template v-if="loading">
         <div class="flex flex-col justify-center items-center">
           <h1 class="text-white text-2xl mb-4 ">Loading</h1>
           <div class="flex gap-2">
-            <span class="size-3 animate-bounce rounded-full bg-[#9c66ff] "></span>
-            <span class="size-3 animate-bounce rounded-full bg-[#9c66ff] [animation-delay:0.2s] "></span>
-            <span class="size-3 animate-bounce rounded-full bg-[#9c66ff] [animation-delay:0.4s] "></span>
+            <span class="size-3 animate-bounce rounded-full bg-[#9c66ff]"></span>
+            <span class="size-3 animate-bounce rounded-full bg-[#9c66ff] [animation-delay:0.2s]"></span>
+            <span class="size-3 animate-bounce rounded-full bg-[#9c66ff] [animation-delay:0.4s]"></span>
           </div>
         </div>
       </template>
@@ -47,23 +42,23 @@
         <div role="tabpanel" class="mt-4 h-100%">
           <div v-if="activeTab === 'general'">
             <!-- General settings -->
-            <Settings-General :currentConfig="currentConfig" :serverConfig="serverConfig"/>
+            <Settings-General :currentConfig="currentConfig"/>
           </div>
           <div v-if="activeTab === 'camera'">
             <!-- Camera settings -->
-            <Settings-Camera :currentConfig="currentConfig" :serverConfig="serverConfig"/>
+            <Settings-Camera :currentConfig="currentConfig"/>
           </div>
           <div v-if="activeTab === 'plugins'">
             <!-- Plugins -->
-            <Settings-Plugins :currentConfig="currentConfig" :serverConfig="serverConfig"/>
+            <Settings-Plugins :currentConfig="currentConfig"/>
           </div>
           <div v-if="activeTab === 'about'">
             <!-- About -->
-            <Settings-About :currentConfig="currentConfig" :serverConfig="serverConfig"/>
+            <Settings-About :currentConfig="currentConfig"/>
           </div>
           <div v-if="activeTab === 'developer'">
             <!-- About -->
-            <Settings-Developer :currentConfig="currentConfig" :serverConfig="serverConfig"/>
+            <Settings-Developer :currentConfig="currentConfig"/>
           </div>
         </div>
       </template>

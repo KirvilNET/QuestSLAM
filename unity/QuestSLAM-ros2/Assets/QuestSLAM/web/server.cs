@@ -94,6 +94,14 @@ namespace QuestSLAM.web.server
                 wsModule.BroadcastMessage(json);
             }
         }
+        #endregion
+
+        #region Unity Lifecycle 
+
+        void OnApplicationQuit()
+        {
+            server.Dispose();
+        }
 
         #endregion
     }

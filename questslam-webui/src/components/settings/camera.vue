@@ -1,12 +1,12 @@
 <script setup lang="ts">
     import { toggleCamera, AprilTagTracking, save, resetToDefault } from '../QuestSLAM/settings.ts'
-
-    const props = defineProps<{
-        config: object
-    }>();
+    import type { Config } from '../QuestSLAM/schema.ts'
 
     
 
+    const props = defineProps<{
+        currentConfig: Config;
+    }>();
 </script>
 
 <template>
@@ -17,12 +17,21 @@
             <div class="mt-2">
                 <div class="flex flex-col gap-2">
                     <div class="flex gap-2">
-                        <input v-model="toggleCamera" type="checkbox" id="autoStart" class="">
-                        <label for="autoStart" class="text-white">Enable Cameras</label>
+                        <input v-model="props.currentConfig.toggleCamera" type="checkbox" id="toggleCamera" class="">
+                        <label for="toggleCamera" class="text-white">Enable Cameras</label>
                     </div>
 
-                    <h2 class="text-white text-xl">AprilTags</h2>
+                    <div class="flex justify-between">
+                        <label for="tagFamily" class="block mb-2.5 text-s font-medium text-white">Camera Eye</label>
+                        <select id="tagFamily" class="inline-block px-3 py-2.5 bg-[#3f3f3f] text-sm rounded-xl focus:ring-brand focus:border-brand shadow-xs placeholder:text-body text-white">
+                          <option selected value="right">Right</option>
+                          <option value="left">Left</option>
+                        </select>
+                    </div>
 
+                    <div class="m-2 h-px bg-[#8c52ff]"></div>
+
+                    <h2 class="text-white text-xl">AprilTags</h2>
                     <div class="flex gap-2">
                         <input v-model="AprilTagTracking" type="checkbox" id="AprilTagTracking" class="">
                         <label for="AprilTagTracking" class="text-white">AprilTag Tracking</label>
@@ -40,7 +49,8 @@
                           <option value="Standard52h13">Standard52h13</option>
                         </select>
                     </div>
-                    
+
+                    <div class="m-2 h-px bg-[#8c52ff]"></div>
                 </div>
             </div>
             <div class="flex gap-2 mt-4">

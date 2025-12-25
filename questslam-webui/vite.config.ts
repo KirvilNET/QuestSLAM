@@ -12,6 +12,11 @@ export default defineConfig({
     vue(),
     tailwindcss()
   ],
+  
+  optimizeDeps: {
+    include: ['@preline/collapse']
+  },
+
   base: './',
   
   // Build configuration

@@ -1,5 +1,5 @@
 import { reactive, ref } from 'vue'
-import type { Config } from './schema.ts'
+import type { Config, AppInfo } from './schema.ts'
 
 
 //General
@@ -15,18 +15,30 @@ export const AprilTagFamily = ref('');
 
 
 const defaultConfig: Config = {
-    headsetID: 0,
-    rosConnectionIP: '0.0.0.0',
-    trackingspeed: 120,
-    toggleCamera: false,
-    AutoStart: false,
-    AprilTagTracking: false,
-    AprilTagFamily: '36h11',
+  headsetID: 0,
+  rosConnectionIP: '0.0.0.0',
+  trackingspeed: 120,
+  toggleCamera: false,
+  AutoStart: false,
+  AprilTagTracking: false,
+  AprilTagFamily: '36h11',
 }
 
-export const serverConfig = reactive<Config>({ ...defaultConfig })
+const defaultInfo: AppInfo = {
+  AppVersion: '',
+  AppName: '',
+  BuildDate: '',
+  HorisionOSVersion: '',
+  UnityVersion: '',
+  DeviceModel: '',
+}
+
+
 export const currentConfig = reactive<Config>({ ...defaultConfig })
-const loading = ref(false);
+export const Info = reactive<AppInfo>({ ...defaultInfo})
+
+export const hasConfig = ref(false);
+export const hasAppInfo = ref(false);
 
 export async function save() {
    try {
@@ -50,8 +62,8 @@ export async function save() {
        
 }
 
-export const fetchConfig = async () => {
-    loading.value = true
+export async function fetchConfig() {
+    hasConfig.value = false
     try {
       const response = await fetch('http://localhost:9234/api/config')
 
@@ -62,21 +74,68 @@ export const fetchConfig = async () => {
       var newConfig = await response.json() as Config
       console.log('Config loaded:', newConfig)
 
-      Object.assign(serverConfig, newConfig)
+      Object.assign(currentConfig, newConfig)
 
     } catch (err) {
       console.error('Failed to load config:', err)
     } finally {
-      loading.value = false
+      hasConfig.value = true
+    }
+}
+
+export async function fetchInfo() {
+    hasAppInfo.value = false
+    try {
+      const response = await fetch('http://localhost:9234/api/info')
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      var info = await response.json() as Config
+      console.log('Config loaded:', info)
+
+      Object.assign(Info, info)
+
+    } catch (err) {
+      console.error('Failed to load config:', err)
+    } finally {
+      hasAppInfo.value = true
     }
 }
 
 export async function resetToDefault() {
-  
+  Object.assign(currentConfig, defaultConfig)
 }
+
 export function ExportConfig() {
+  
+  const jsonString = JSON.stringify(currentConfig, null, 2)
+  const blob = new Blob([jsonString], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
 
+  link.href = url
+  link.download = 'QuestSLAM_config.json'
+  link.click()
+  URL.revokeObjectURL(url)
 }
-export function ImportConfig() {
 
-}
+export async function ImportConfig(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  
+  if (!file) return
+  
+  try {
+    const text = await file.text()
+    const config: Config = JSON.parse(text)
+    
+    Object.assign(currentConfig, config)
+    console.log('Imported config:', config)
+    
+  } catch (error) {
+    console.error('Failed to import config:', error)
+    alert('Invalid JSON file')
+  }
+} 

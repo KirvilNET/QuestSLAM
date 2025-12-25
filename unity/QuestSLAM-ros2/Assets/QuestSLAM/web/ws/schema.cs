@@ -87,4 +87,15 @@ namespace QuestSLAM.web.dataschema
         public bool AutoStart;
         public bool AprilTagTracking;
     }
+
+    [Serializable]
+    public class AppInfo
+    {
+        public string AppVersion;
+        public string AppName;
+        public string BuildDate; 
+        public string HorisionOSVersion;
+        public string UnityVersion;
+        public string DeviceModel;
+    }
 }

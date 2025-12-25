@@ -23,7 +23,6 @@ import general from './components/settings/general.vue'
 import camera from './components/settings/camera.vue'
 import plugins from './components/settings/plugins.vue'
 import about from './components/settings/about.vue'
-import developer from './components/settings/developer.vue'
 
 const app = createApp(App);
 
@@ -46,7 +45,6 @@ app.component('Settings-General', general)
 app.component('Settings-Camera', camera)
 app.component('Settings-Plugins', plugins)
 app.component('Settings-About', about)
-app.component('Settings-Developer', developer)
 
 
 app.use(router)

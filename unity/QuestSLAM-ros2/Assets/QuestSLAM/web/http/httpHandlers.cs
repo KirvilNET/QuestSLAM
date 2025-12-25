@@ -34,6 +34,10 @@ namespace QuestSLAM.web.Handlers
                 {
                    ConfigHandler(context);
                 }
+                else if (context.RequestedPath == "/info")
+                {
+                    InfoHandler(context);
+                }
             }
             catch (Exception ex)
             {
@@ -98,6 +102,42 @@ namespace QuestSLAM.web.Handlers
                     await context.SendStringAsync(new { error = ex.Message }.ToString(), "application/json", Encoding.UTF8);
                 }
             }
+            else
+            {
+                context.Response.StatusCode = 405;
+                await context.SendStringAsync(new { error = "Method not allowed" }.ToString(), "application/json", Encoding.UTF8);
+            }
+        }
+
+        private async void InfoHandler(IHttpContext context)
+        {
+            if (context.Request.HttpVerb == HttpVerbs.Get)
+            {
+                try
+                {
+                    var AppInfo = new dataschema.AppInfo
+                    {
+                        AppVersion = Application.version,
+                        AppName = Application.productName,
+                        BuildDate = File.GetLastWriteTime(Application.dataPath).ToString("yyyy-MM-dd HH:mm:ss"),
+                        HorisionOSVersion = SystemInfo.operatingSystem,
+                        UnityVersion = Application.unityVersion,
+                        DeviceModel = SystemInfo.deviceModel,
+                    };
+
+                    var data = JsonUtility.ToJson(AppInfo);
+
+                    context.Response.StatusCode = 200;
+                    await context.SendStringAsync(data, "application/json", Encoding.UTF8);
+                    QueuedLogger.Log("✓ AppInfo retrieved");
+                } 
+                catch (Exception ex)
+                {
+                    QueuedLogger.LogError($"Failed to get app info: {ex.Message}");
+                    context.Response.StatusCode = 500;
+                    await context.SendStringAsync(new { error = ex.Message }.ToString(), "application/json", Encoding.UTF8);
+                }
+            } 
             else
             {
                 context.Response.StatusCode = 405;
