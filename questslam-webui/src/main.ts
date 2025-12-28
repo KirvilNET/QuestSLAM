@@ -24,6 +24,10 @@ import camera from './components/settings/camera.vue'
 import plugins from './components/settings/plugins.vue'
 import about from './components/settings/about.vue'
 
+//Logs
+import logviewer from './components/logging/logviewer.vue'
+import logEntry from './components/logging/log.vue'
+
 const app = createApp(App);
 
 //components
@@ -46,6 +50,9 @@ app.component('Settings-Camera', camera)
 app.component('Settings-Plugins', plugins)
 app.component('Settings-About', about)
 
+//Logs
+app.component('logViewer', logviewer)
+app.component('log', logEntry)
 
 app.use(router)
 app.mount('#app');

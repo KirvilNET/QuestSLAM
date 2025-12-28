@@ -6,6 +6,9 @@ using System.Threading;
 using System.IO;
 using System.Runtime.CompilerServices;
 
+using QuestSLAM.web.server;
+using QuestSLAM.web.dataschema;
+
 namespace QuestSLAM.Utils
 {   
     public class QueuedLogger
@@ -188,7 +191,7 @@ namespace QuestSLAM.Utils
             }
         }
 
-        public static void Flush()
+        public static void Flush(webserver server)
         {
             // Copy entries under lock, then log outside lock to avoid holding lock during Debug calls
             List<LogEntry> entriesToFlush;
@@ -209,22 +212,32 @@ namespace QuestSLAM.Utils
                     {
                         case Levels.WARNING:
                             Debug.LogWarning(entry.ToString());
+                            server.SendLog(entry);
                             break;
                         case Levels.ERROR:
+                            var time = DateTimeOffset.FromUnixTimeMilliseconds(entry.Timestamp).LocalDateTime.ToLongTimeString();
+                            LogPacket packet = new LogPacket(entry.Message, Levels.WARNING, time);
+
                             if (entry.Exception != null)
                             {
                                 // Log the custom message with prefix and count
                                 Debug.LogError(entry.ToString());
                                 Debug.LogException(entry.Exception);
+
+                                server.SendLog(entry, true);
                             }
                             else
                             {
                                 Debug.LogError(entry.ToString());
+                                server.SendLog(entry);
                             }
                             break;
-                        default:
+                        case Levels.INFO:
                             Debug.Log(entry.ToString());
+                            server.SendLog(entry);
                             break;
+                        default:
+                            return;
                     }
                 }
             });

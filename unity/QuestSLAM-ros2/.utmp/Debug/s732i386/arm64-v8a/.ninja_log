@@ -1,0 +1,10 @@
+# ninja log v5
+322	4221	7885113770971230	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	3df0ba92ecd78aaf
+385	4243	7885113770941251	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	71113b2715e1aef4
+416	4248	7885113772138748	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	560159c18bc4aa5c
+1	4729	7885113776964163	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	27310ce0c3498215
+401	6403	7885113793604859	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	809e6d674cd225ca
+282	6461	7885113794545567	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	741dc6b7a1d885db
+431	6732	7885113797021118	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	9cbd83e6cfdc3b0
+350	6930	7885113799165327	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	caece65737374c4f
+6931	7340	7885113803525355	C:/Users/dfraz/Documents/GitHub/QuestSLAM/unity/QuestSLAM-ros2/Library/PramData/AndroidApplicationController/Cache/com.kirvilnet.QuestSLAM/gradle-project/unityLibrary/build/intermediates/cxx/Debug/s732i386/obj/arm64-v8a/libgame.so	f0f7cf9c274cc763

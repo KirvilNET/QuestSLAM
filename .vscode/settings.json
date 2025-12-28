@@ -49,5 +49,11 @@
     "explorer.fileNesting.patterns": {
         "*.sln": "*.csproj"
     },
-    "dotnet.defaultSolution": "QuestSLAM-ros2.slnx"
+    "dotnet.defaultSolution": "QuestSLAM-ros2.slnx",
+    
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+
 }

@@ -20,6 +20,8 @@ const threejs = ref<HTMLDivElement | null>(null)
 let originLabel: THREE.Sprite | null = null
 let headsetLabel: THREE.Sprite | null = null
 
+let headset: THREE.Group | null = null
+
 let initialCameraPosition: THREE.Vector3
 let initialControlsTarget: THREE.Vector3
 
@@ -57,7 +59,7 @@ onMounted(() => {
     initialControlsTarget = controls.target.clone()
 
     let origin = makeAxis('origin', 'rgba(0,0,0,0.7)', '#ffffff')
-    let headset = makeAxis('headset', 'rgba(0,0,0,0.7)', '#ffffff')
+    headset = makeAxis('headset', 'rgba(0,0,0,0.7)', '#ffffff')
 
     originLabel = origin.getObjectByName('label') as THREE.Sprite
     headsetLabel = headset.getObjectByName('label') as THREE.Sprite
@@ -97,8 +99,8 @@ onMounted(() => {
 watch(
   () => props.showLabels,
   (visible) => {
-    if (originLabel) originLabel.visible = visible
-    if (headsetLabel) headsetLabel.visible = visible
+    if (originLabel) originLabel.visible = visible;
+    if (headsetLabel) headsetLabel.visible = visible;
   },
   { immediate: true } 
 )
@@ -106,21 +108,27 @@ watch(
 watch(
   () => props.resetView,
   (x) => {
-    if (x) resetCamera()
+    if (x) resetCamera();
   },
   { immediate: true } 
 )
 
 function resetCamera() {
-    camera.position.copy(initialCameraPosition)   // reset position
-    controls.target.copy(initialControlsTarget)  
-    controls.update()
+  camera.position.copy(initialCameraPosition)   // reset position
+  controls.target.copy(initialControlsTarget)  
+  controls.update()
 }
 
 function animate() {
-    frameId = requestAnimationFrame(animate)
-    controls.update()
-    renderer.render(scene, camera)
+  frameId = requestAnimationFrame(animate)
+  controls.update()
+  updateHeadsetPos(props.pose);
+  renderer.render(scene, camera)
+}
+
+function updateHeadsetPos(pose: {pos: {x: number, y: number, z: number}, rot: {x: number, y: number, z: number, w: number}}) {
+  headset?.position.set(pose.pos.x, pose.pos.y, pose.pos.z)
+  headset?.rotation.set(pose.rot.x, pose.rot.y, pose.rot.z)
 }
 </script>
 

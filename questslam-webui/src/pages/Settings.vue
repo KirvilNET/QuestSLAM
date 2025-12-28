@@ -1,6 +1,6 @@
 <script setup>
   import { ref, onMounted, watch } from 'vue'
-  import { fetchConfig, currentConfig } from '../components/QuestSLAM/settings.ts';
+  import { fetchConfig, currentConfig, Info } from '../components/QuestSLAM/settings.ts';
 
   const activeTab = ref('general')
 
@@ -54,7 +54,9 @@
           </div>
           <div v-if="activeTab === 'about'">
             <!-- About -->
-            <Settings-About :currentConfig="currentConfig"/>
+            <Settings-About 
+              :AppInfo="Info"
+            />
           </div>
           <div v-if="activeTab === 'developer'">
             <!-- About -->

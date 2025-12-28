@@ -10,18 +10,37 @@ using QuestSLAM.Utils;
 
 namespace QuestSLAM.config
 {
-    public class Config
-    {
-        public int headsetID { get; set; }
-        public string rosConnectionIP { get; set; }
-        public int trackingspeed { get; set; }
-        public bool toggleCamera { get; set; }
-        public bool AutoStart { get; set; }
-        public bool AprilTagTracking { get; set; }
-    }
-
     public class ConfigManager
     {
+        /// <summary>The schema for the config file.</summary>
+        [Serializable]
+        public class Config
+        {
+            /// <summary>The ID of the headset. Only matters if using QuestSLAM in multi headset mode</summary>
+            public int headsetID { get; set; }
+
+            /// <summary>The ip the the ros connector will attempt to connect to. this must be a valid ROS2 instance and actively running ros2bridge.</summary>
+            public string rosConnectionIP { get; set; }
+
+            /// <summary>The tracking speed of the OVR instance</summary>
+            public int trackingspeed { get; set; }
+
+            /// <summary>Whether sim mode is enabled</summary>
+            public bool sim { get; set; }
+
+            /// <summary>Toggle for the passthrough camera</summary>
+            public bool toggleCamera { get; set; }
+
+            /// <summary>Whether QuestSLAM should start up on boot</summary>
+            public bool AutoStart { get; set; }
+
+            /// <summary>Toggle for tracking AprilTags. Does not work if toggleCamera is not true</summary>
+            public bool AprilTagTracking { get; set; }
+
+            /// <summary>April Tag Family</summary>
+            public string AprilTagFamily { get; set; }
+        }
+
         private static ConfigManager instance;
         public static ConfigManager Instance => instance ??= new ConfigManager();
 
@@ -29,6 +48,7 @@ namespace QuestSLAM.config
 
         private Config config;
         
+        /// <summary>Initilize the config path based on its platform</summary>
         public void Init()
         {
             #if UNITY_ANDROID && !UNITY_EDITOR
@@ -38,6 +58,7 @@ namespace QuestSLAM.config
             #endif
         }
 
+        /// <summary>Load the config from the config file</summary>
         public void Load()
         {
             try
@@ -54,7 +75,7 @@ namespace QuestSLAM.config
                     .WithNamingConvention(CamelCaseNamingConvention.Instance)
                     .Build();
                 config = deserializer.Deserialize<Config>(raw);
-                QueuedLogger.Log($"Config loaded from {configPath} \n data: {raw}", QueuedLogger.Levels.INFO);
+                QueuedLogger.Log($"Config loaded from {configPath} \n data: {raw}");
             }
             catch (System.Exception e)
             {
@@ -63,6 +84,7 @@ namespace QuestSLAM.config
             }
         }
 
+        /// <summary>Save the config to the file</summary>
         public void Save(Config newConfig)
         {
             try
@@ -80,6 +102,7 @@ namespace QuestSLAM.config
             }
         }
 
+        /// <summary>Initilize the config file</summary>
         public void InitConfig()
         {
             config = new Config
@@ -87,18 +110,70 @@ namespace QuestSLAM.config
                 headsetID = 0,
                 rosConnectionIP = "127.0.0.1",
                 trackingspeed = 120,
+                sim = false,
                 toggleCamera = false,
                 AutoStart = false,
-                AprilTagTracking = false
+                AprilTagTracking = false,
+                AprilTagFamily = "36h11"
             };
 
             Save(config);
         }
         
+        /// <summary>Get a the config as the config class</summary>
         public Config GetConfig()
         {
             Load();
             return config;
+        }
+
+        /// <summary>Get a specific config value</summary>
+        public int getHeadsetID()
+        {
+            if (config == null) Load();
+            return config.headsetID;
+        }
+
+        /// <inheritdoc/>
+        public string getRosConnectionIP()
+        {
+            if (config == null) Load();
+            return config.rosConnectionIP;
+        }
+
+        /// <inheritdoc/>
+        public int getTrackingSpeed()
+        {
+            if (config == null) Load();
+            return config.trackingspeed;
+        }
+
+        /// <inheritdoc/>
+        public bool getSim()
+        {
+            if (config == null) Load();
+            return config.sim;
+        }
+
+        /// <inheritdoc/>
+        public bool getToggleCamera()
+        {
+            if (config == null) Load();
+            return config.toggleCamera;
+        }
+
+        /// <inheritdoc/>
+        public bool getAutoStart()
+        {
+            if (config == null) Load();
+            return config.AutoStart;
+        }
+
+        /// <inheritdoc/>
+        public bool getAprilTagTracking()
+        {
+            if (config == null) Load();
+            return config.AprilTagTracking;
         }
     }
 }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue'
 
+  const connectionText = ref<HTMLSpanElement>();
+
   const props = defineProps<{
     connectionStatus: boolean
     batteryPercentage: number
@@ -10,19 +12,19 @@
 
   onMounted(() => {
     if (props.connectionStatus === true) {
-      document.getElementById("connection")!.classList.add('bg-[#66ffcc]')
-      document.getElementById("connection")!.classList.add('text-[#000000]')
+      connectionText.value!.classList.add('bg-[#66ffcc]')
+      connectionText.value!.classList.add('text-[#000000]')
       statustext.value = "Connected"
     } else {
-      document.getElementById("connection")!.classList.add('bg-[#ff0000]')
-      document.getElementById("connection")!.classList.add('text-[#ffffff]')
+      connectionText.value!.classList.add('bg-[#ff0000]')
+      connectionText.value!.classList.add('text-[#ffffff]')
       statustext.value = "Disconnected"
     }
   })
 </script>
 
 <template>
-  <nav class="border-b border-[#8c52ff] bg-[#282828] px-4 py-1 flex items-center justify-between shadow gap-1">
+  <nav class="border-b border-[#8c52ff] bg-[#282828] px-4 py-1 flex items-center justify-between shadow gap-1 h-full">
     <div class="flex items-center gap-3 ml-2">
       <div>
         <p class="text-[#8c52ff] font-semibold leading-none">QuestSLAM</p>
@@ -44,7 +46,7 @@
               <router-link class="text-[#ffffff] text-sm px-3 py-1 rounded-lg transition" to="/camera">Cameras</router-link>
               <router-link class="text-[#ffffff] text-sm px-3 py-1 rounded-lg transition" to="/logs">Logs</router-link>
               <router-link class="text-[#ffffff] text-sm px-3 py-1 rounded-lg transition" to="/settings">Settings</router-link>
-              <span id="connection" class=" ml-2 px-3 py-1 rounded-full text-xs bg-panel2 text-center">{{ statustext }}</span>
+              <span ref="connectionText" class=" ml-2 px-3 py-1 rounded-full text-xs bg-panel2 text-center">{{ statustext }}</span>
               <div class="bg-panel2 rounded-xl p-3 md:w-32 text-center">
                 <div class="relative h-6 w-full bg-[#575757] rounded-full overflow-hidden">
                   <div class="absolute top-0 left-0 h-6 bg-[#00ffaa] transition-all" :style="{ width: props.batteryPercentage + '%' }"></div>

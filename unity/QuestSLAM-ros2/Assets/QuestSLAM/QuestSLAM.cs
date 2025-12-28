@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Profiling;
-using UnityEngine.UIElements;
 
-using System.Net;
-using System.Net.Sockets;
+
 using System;
+using System.IO;
+
 
 
 using RosSharp.RosBridgeClient;
@@ -13,83 +13,52 @@ using RosSharp;
 using std_msgs = RosSharp.RosBridgeClient.MessageTypes.Std;
 using geometry_msgs = RosSharp.RosBridgeClient.MessageTypes.Geometry;
 using nav_msgs = RosSharp.RosBridgeClient.MessageTypes.Nav;
-using rosapi = RosSharp.RosBridgeClient.MessageTypes.Rosapi;
-
-
-using PassthroughCameraSamples;
-using UnityEngine.UI;
 
 using QuestSLAM.sim;
 using QuestSLAM.web.server;
 using QuestSLAM.web.dataschema;
 using QuestSLAM.config;
 using QuestSLAM.Utils;
+using QuestSLAM.UI;
+using QuestSLAM.ros;
+using System.Threading.Tasks;
 
 
 namespace QuestSLAM.Manager
 {
     public class QuestSLAMManager : MonoBehaviour
     {
+        #region Fields
+
+        [SerializeField] private OVRCameraRig cameraRig;
+
+        #endregion
+
+        #region Headset Transforms
+
         public Vector3 headset_position;
         public Vector3 headset_eulerAngles;
         public Quaternion headset_rotation;
         public Vector3 headset_angular;
         public Vector3 headset_linear;
-        public int headsetID = 0;
-        public bool sim = false;
 
-        [SerializeField] private OVRCameraRig cameraRig;
-        [SerializeField] private UIDocument ui;
-        private Label dashboardText;
-        private Label IPText;
+        #endregion
 
-        private string myAddr;
 
         private nav_msgs.Odometry odom;
         private std_msgs.Float32 battery;
 
         RosSocket socket;
-        RosConnector connector;
+        ROSConnector connector;
 
         private Utils.System sys;
         private SITL sitl;
         private webserver server;
         private ConfigManager config;
+        private UIManager ui;
+        private Utils.AppInfo info;
 
         private TelemetryPacket Tpacket;
-
-        private float updateInterval = 1f / 30f;
-        private float timeSinceLastUpdate = 0f;
-
-        public void UpdateIPAddressText()
-        {
-            IPHostEntry hostEntry = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (IPAddress ip in hostEntry.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
-                {
-                    myAddr = ip.ToString();
-                    VisualElement root = ui.rootVisualElement;
-
-                    VisualElement TextContainer = root.Q<VisualElement>("UI").Q<VisualElement>("Container").Q<VisualElement>("TextContainer");
-
-                    dashboardText = TextContainer.Q<Label>("Dashboard");
-                    IPText = TextContainer.Q<Label>("IP");
-
-                    if (myAddr == "127.0.0.1")
-                    {
-                        IPText.text = "No Adapter Found";
-                        dashboardText.text = "Dashboard being hosted on http://localhost:9234";
-                    }
-                    else
-                    {
-                        IPText.text = $"IP: {myAddr}";
-                        dashboardText.text = $"Dashboard being hosted on http://{myAddr}:9234";
-                    }
-                }
-                break;
-            }
-        }
         
         void genOdomMsgs()
         {
@@ -189,17 +158,16 @@ namespace QuestSLAM.Manager
         {
             Tpacket = new TelemetryPacket
             {
-               connectionStatus = sim ? true : connector.IsConnected.WaitOne(0),
-               batteryPercentage = sim ? sitl.GetSimulatedBattery() : SystemInfo.batteryLevel * 100,
-               headsetID = headsetID,
-               rosConnectionIP = sim ? "SIMULATION MODE" :connector.RosBridgeServerUrl,
+               connectionStatus = config.getSim() ? true : connector.IsConnected.WaitOne(0),
+               batteryPercentage = config.getSim() ? sitl.GetSimulatedBattery() : SystemInfo.batteryLevel * 100,
+               rosConnectionIP = config.getSim() ? "SIMULATION MODE" :connector.RosBridgeServerUrl,
                rosTime = UnityEngine.Time.time,
-               cpu = sim ? sitl.GetSimulatedCpu() : sys.GetCpuUsage(),
-               mem = sim ? sitl.GetSimulatedMemory() : Profiler.GetTotalAllocatedMemoryLong(),
-               temp = sim ? sitl.GetSimulatedTemp() : sys.GetCpuTempCelsius(),
-               isTracking = sim ? true : sys.HasValidHeadPose(),
+               cpu = config.getSim() ? sitl.GetSimulatedCpu() : sys.GetCpuUsage(),
+               mem = config.getSim() ? sitl.GetSimulatedMemory() : Profiler.GetTotalAllocatedMemoryLong(),
+               temp = config.getSim() ? sitl.GetSimulatedTemp() : sys.GetCpuTempCelsius(),
+               isTracking = config.getSim() ? true : sys.HasValidHeadPose(),
                trackingspeed = sys.TrackingSpeed(),
-               fps =  sim ? sitl.GetSimulatedFps() : 1f / Time.deltaTime,
+               fps =  config.getSim() ? sitl.GetSimulatedFps() : 1f / Time.deltaTime,
                pose = new web.dataschema.Pose
                {
                    pos = new web.dataschema.Vec3
@@ -219,65 +187,54 @@ namespace QuestSLAM.Manager
             };
 
             server.SendTelemetry(Tpacket);
-            QueuedLogger.Flush();
+            QueuedLogger.Flush(server);
             
         }
-            
-
 
         void MainUpdate()
         {
-            #if UNITY_ANDROID && !UNITY_EDITOR
-                socket = connector.RosSocket;
-        
-                headset_position = cameraRig.centerEyeAnchor.position;
-                headset_rotation = cameraRig.centerEyeAnchor.rotation;
-                headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
-
-                genOdomMsgs();
-                genROSTelemetry();
+            socket = connector.RosSocket;
     
-            #endif
+            headset_position = cameraRig.centerEyeAnchor.position;
+            headset_rotation = cameraRig.centerEyeAnchor.rotation;
+            headset_eulerAngles = cameraRig.centerEyeAnchor.eulerAngles;
 
-            #if UNITY_EDITOR 
-                sim = true;
-
-                headset_position = sitl.GetSimulatedPos();
-                headset_eulerAngles = sitl.GetSimulatedEulerAngles();
-                headset_rotation = sitl.GetSimulatedRot(headset_eulerAngles);
-                
-            #endif
+            genOdomMsgs();
+            genROSTelemetry();
             
         }
 
         private async void Awake()
         {
-            UpdateIPAddressText();
            
             getCommmandArgs();
 
             sitl = GetComponent<SITL>();
+            ui = GetComponent<UIManager>();
+
             sys = new Utils.System();
             QueuedLogger logger = new QueuedLogger();
             config = new ConfigManager();
+            info = new Utils.AppInfo();
 
-            #if UNITY_ANDROID && !UNITY_EDITOR
-                connector = GetComponent<RosConnector>();
-                connector.connect();
-            #endif
+            config.Init();
+            logger.Init();
+
+            ui.Init(info.getAppInfo().AppVersion);
+
+            connector = GetComponent<ROSConnector>();
+            connector.connect(config.getRosConnectionIP(), "9090");
 
             try {
                 server = GetComponent<webserver>();
+                var AppContext = info.getAppInfo();
 
-                server.StartServer(config);
+                await server.StartServer(config, AppContext);
             }
             catch (Exception e) 
             {
                 QueuedLogger.Log($"Failed to start QuestSLAM WebUI Error: {e}");
             }
-
-            config.Init();
-            logger.Init();
 
             InvokeRepeating(nameof(SlowUpdate), 0, 1f / 3);
             InvokeRepeating(nameof(MainUpdate), 0, 1f / 120);

@@ -1,17 +1,17 @@
 import { reactive, ref } from 'vue'
-import type { Telemetry, Log } from './schema';
+import type { Telemetry } from './schema';
+import { newLogEntry } from '../logging/logs.ts'
 
 let ws: WebSocket | null = null
 
-export let uri = 'ws://localhost:9234/ws';
+export let uri = "ws://" + window.location.hostname + ":9234/ws";
 
-export let reconnectAttempts = ref(0);
-export let maxReconnectAttempts = 5;
+export let WSreconnectAttempts = ref(0);
+export let WSmaxReconnectAttempts = 5;
 let reconnectDelay = 2000;
 export const isConnected = ref(false);
 
-//Data
-export let telemetry = reactive<Telemetry>({
+const defaultTelemetry: Telemetry ={
   connectionStatus: false,
   batteryPercentage: 0,
   headsetID: 0,
@@ -27,27 +27,12 @@ export let telemetry = reactive<Telemetry>({
     pos: {x: 0, y: 0, z: 0},
     rot: {x: 0, y: 0, z: 0, w: 0}
   }
-});
+}
 
-export let log = reactive<Log>({
-  logType: '',
-  data: ''
-});
+export let telemetry = reactive<Telemetry>({ ...defaultTelemetry});
 
 export function resetTelemetry() {
-    telemetry.connectionStatus = false;
-    telemetry.batteryPercentage = 0;
-    telemetry.headsetID = 0;
-    telemetry.rosConnectionIP = '127.0.0.1';
-    telemetry.rosTime = 0;
-    telemetry.cpu = 0;
-    telemetry.mem = 0;
-    telemetry.temp = 0;
-    telemetry.isTracking = false;
-    telemetry.trackingspeed = 0;
-    telemetry.fps = 0;
-    telemetry.pose.pos = {x: 0, y: 0, z: 0};
-    telemetry.pose.rot = {x: 0, y: 0, z: 0, w: 0};
+  Object.assign(telemetry, defaultTelemetry)
 }
 
 export function connect() {
@@ -90,9 +75,7 @@ export function connect() {
               break;
             
             case "log":
-              log.logType = JsonData.data.logType;
-              log.data = JsonData.data.data;
-
+              HandleLog(JsonData.data)
               break;
             
             default:
@@ -102,8 +85,8 @@ export function connect() {
         }
 
         ws.onerror = (err) => {
-            isConnected.value = false
-            resetTelemetry()
+            isConnected.value = false;
+            resetTelemetry();
             reconnect();
             console.error('WS error', err)
         }
@@ -115,15 +98,44 @@ export function connect() {
     }
 }
 
-export function reconnect() {
-  if (reconnectAttempts.value < maxReconnectAttempts) {
-    reconnectAttempts.value++;
-    console.log(`Reconnecting... (${reconnectAttempts.value}/${maxReconnectAttempts})`);
-    
-    setTimeout(() => {
-      connect();
-    }, reconnectDelay);
+function HandleLog(data: any) {
+
+  switch (data.level) {
+    case 0:
+      //console.log("New INFO Log Entry", data)
+      newLogEntry(data.message, 'info', data.timestamp)
+    break;
+
+    case 1:
+      //console.log("New WARNING Log Entry", data)
+      newLogEntry(data.message, 'warning', data.timestamp)
+    break;
+
+    case 2:
+      //console.log("New ERROR Log Entry", data)
+      newLogEntry(data.message, 'error', data.timestamp, data.stackTrace)
+    break;
+
+    default:
+      console.warn("Unknown message type:", data);
+    break;
+  }
+}
+
+export function reconnect(manual?: boolean) {
+  if (!manual) {
+    if (WSreconnectAttempts.value < WSmaxReconnectAttempts) {
+      WSreconnectAttempts.value++;
+      console.log(`Reconnecting... (${WSreconnectAttempts.value}/${WSmaxReconnectAttempts})`);
+
+      setTimeout(() => {
+        connect();
+      }, reconnectDelay);
+
+    } else {
+      console.error('Max websocket reconnection attempts reached');
+    }
   } else {
-    console.error('Max reconnection attempts reached');
+    connect();
   }
 }

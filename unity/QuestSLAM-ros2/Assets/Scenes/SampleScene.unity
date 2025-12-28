@@ -764,7 +764,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _monoscopic: 0
   _sharpenType: 0
-  _enableDynamicResolution: 1
+  _enableDynamicResolution: 0
   minDynamicResolutionScale: 1
   maxDynamicResolutionScale: 1
   quest2MinDynamicResolutionScale: 0.7
@@ -816,6 +816,7 @@ MonoBehaviour:
   requestEyeTrackingPermissionOnStartup: 0
   requestScenePermissionOnStartup: 0
   requestRecordAudioPermissionOnStartup: 0
+  requestPassthroughCameraAccessPermissionOnStartup: 0
   _localDimming: 1
   _trackingOriginType: 0
   usePositionTracking: 1
@@ -1067,11 +1068,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1422039732}
   - component: {fileID: 1422039733}
-  - component: {fileID: 1422039734}
+  - component: {fileID: 1422039740}
   - component: {fileID: 1422039736}
   - component: {fileID: 1422039735}
   - component: {fileID: 1422039738}
   - component: {fileID: 1422039737}
+  - component: {fileID: 1422039739}
   m_Layer: 0
   m_Name: Quest SLAM
   m_TagString: Untagged
@@ -1107,32 +1109,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3306c7d8559934ecbb3eb31e930b1672, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraRig: {fileID: 939398325}
   headset_position: {x: 0, y: 0, z: 0}
   headset_eulerAngles: {x: 0, y: 0, z: 0}
   headset_rotation: {x: 0, y: 0, z: 0, w: 0}
   headset_angular: {x: 0, y: 0, z: 0}
   headset_linear: {x: 0, y: 0, z: 0}
-  headsetID: 0
-  sim: 0
-  cameraRig: {fileID: 939398325}
-  ui: {fileID: 1034012066}
---- !u!114 &1422039734
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1422039731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fb7d56afaa30534e9a7dc10102f9a83, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedRosVersion: 1
-  SecondsTimeout: 10
-  Serializer: 0
-  protocol: 0
-  RosBridgeServerUrl: ws://10.7.1.136:9090
 --- !u!114 &1422039735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1188,6 +1170,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRunning: 0
   url: http://localhost:9234
+--- !u!114 &1422039739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422039731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d14f4cd3c0bf374cbd7a134f167f000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ui: {fileID: 1034012066}
+--- !u!114 &1422039740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422039731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19273148a4861d449aed40938f4de46e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  protocol: 1
+  Serializer: 1
+  selectedRosVersion: 1
+  RosBridgeServerUrl: 0.0.0.0
 --- !u!1 &1435254824
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,7 +1211,6 @@ GameObject:
   - component: {fileID: 1435254828}
   - component: {fileID: 1435254827}
   - component: {fileID: 1435254826}
-  - component: {fileID: 1435254829}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -1220,7 +1230,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1847667787}
   - {fileID: 1034012065}
   m_Father: {fileID: 1422039732}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1292,18 +1301,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1435254829
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435254824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a79c4e23d4d4b64bfa5fa9e6671a460, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1480685808
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,81 +1553,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 606806217}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1847667786
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1847667787}
-  - component: {fileID: 1847667789}
-  - component: {fileID: 1847667788}
-  m_Layer: 0
-  m_Name: Background
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1847667787
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847667786}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1435254825}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1847667788
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847667786}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.07058824, g: 0.07058824, b: 0.07058824, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1847667789
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1847667786}
-  m_CullTransparentMesh: 1
 --- !u!1 &1933506713
 GameObject:
   m_ObjectHideFlags: 0

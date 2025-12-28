@@ -2,14 +2,13 @@ using System;
 using System.IO;
 using System.Linq;
 
-
 using UnityEngine;
 using UnityEngine.XR;
 
 
 namespace QuestSLAM.Utils
 {
-    class System : MonoBehaviour
+    class System
     { 
         // CPU usaage
         private long prevIdle;
@@ -169,6 +168,52 @@ namespace QuestSLAM.Utils
             }
 
             return -1f; // not ready yet
+        }
+    }
+
+    [Serializable]
+    public class AppInfoSchema
+    {
+        /// <summary>The Version of the App</summary>
+        public string AppVersion { get; set; }
+
+        /// <summary>The name of the App</summary>
+        public string AppName { get; set; }
+
+        /// <summary>The Build Date</summary>
+        public string BuildDate { get; set; }
+
+        /// <summary>The HorisionOS Version</summary>
+        public string HorisionOSVersion { get; set; }
+
+        /// <summary>The Unity Version</summary>
+        public string UnityVersion { get; set; }
+
+        /// <summary>The Device Model</summary>
+        public string DeviceModel { get; set; }
+    }
+
+    public class AppInfo
+    {
+        public AppInfoSchema getAppInfo()
+        {
+            try
+            {
+                return new AppInfoSchema
+                {
+                    AppVersion = Application.version,
+                    AppName = Application.productName,
+                    BuildDate = File.GetLastWriteTime(Application.dataPath).ToString("yyyy-MM-dd HH:mm:ss"),
+                    HorisionOSVersion = SystemInfo.operatingSystem,
+                    UnityVersion = Application.unityVersion,
+                    DeviceModel = SystemInfo.deviceModel,
+                };
+            }
+            catch (Exception ex)
+            {
+                QueuedLogger.LogError($"Failed to get app info: {ex.Message}");
+                return null;
+            }
         }
     }
 }

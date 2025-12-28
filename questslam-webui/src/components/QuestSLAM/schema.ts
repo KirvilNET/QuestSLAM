@@ -35,7 +35,9 @@ export type Telemetry  = {
     };
 };
 
-export type Log = {
-    logType: string;
-    data: string;
+export interface LogEntry {
+  message: string
+  stackTrace?: string
+  level: 'info' | 'warning' | 'error' | 'web'
+  timestamp: string
 }

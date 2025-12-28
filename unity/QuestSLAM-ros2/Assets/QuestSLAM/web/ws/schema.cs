@@ -1,4 +1,5 @@
 using System;
+using QuestSLAM.Utils;
 using UnityEngine;
 
 namespace QuestSLAM.web.dataschema
@@ -58,7 +59,6 @@ namespace QuestSLAM.web.dataschema
     {
         public bool connectionStatus;
         public float batteryPercentage;
-        public int headsetID;
         public string rosConnectionIP;
         public float rosTime;
         public float cpu;
@@ -73,8 +73,18 @@ namespace QuestSLAM.web.dataschema
     [Serializable]
     public struct LogPacket
     {
-        public string logType;
-        public string data;
+        public string message; 
+        public Exception stackTrace;
+        public QueuedLogger.Levels level;
+        public string timestamp;
+
+        public LogPacket(string Message, QueuedLogger.Levels Level, string Timestamp, Exception StackTrace = default)
+        {
+            message = Message;
+            level = Level;
+            timestamp = Timestamp;
+            stackTrace = StackTrace;
+        }
     }
 
     [Serializable]

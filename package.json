@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@preline/collapse": "^3.2.3",
-    "@tweenjs/tween.js": "^25.0.0"
-  }
-}

@@ -1,6 +1,13 @@
 import { reactive, ref } from 'vue'
 import type { Config, AppInfo } from './schema.ts'
 
+export let APPreconnectAttempts = ref(0);
+export let APPmaxReconnectAttempts = 5;
+
+export let CONFIGreconnectAttempts = ref(0);
+export let CONFIGmaxReconnectAttempts = 5;
+
+let reconnectDelay = 2000;
 
 //General
 export const headsetID = ref('');
@@ -12,6 +19,9 @@ export const AutoStart = ref(false);
 export const toggleCamera = ref(false);
 export const AprilTagTracking = ref(false);
 export const AprilTagFamily = ref('');
+
+export let uriConfig = "http://" + window.location.hostname +":9234/api/config";
+export let uriInfo = "http://" + window.location.hostname + ":9234/api/info";
 
 
 const defaultConfig: Config = {
@@ -46,7 +56,7 @@ export async function save() {
         var data = JSON.stringify(currentConfig);
         console.log(data)
 
-        const post = await fetch("http://localhost:9234/api/config", {method: 'POST',  headers: {'Content-Type': 'application/json'}, body: data});
+        const post = await fetch(uriConfig, {method: 'POST',  headers: {'Content-Type': 'application/json'}, body: data});
 
         if (!post.ok) {
             throw new Error(`HTTP error! status: ${post.status}`);
@@ -65,7 +75,7 @@ export async function save() {
 export async function fetchConfig() {
     hasConfig.value = false
     try {
-      const response = await fetch('http://localhost:9234/api/config')
+      const response = await fetch(uriConfig)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -75,33 +85,69 @@ export async function fetchConfig() {
       console.log('Config loaded:', newConfig)
 
       Object.assign(currentConfig, newConfig)
-
+      hasConfig.value = true
     } catch (err) {
       console.error('Failed to load config:', err)
-    } finally {
-      hasConfig.value = true
+      retryFetchConfig()
+      hasConfig.value = false
     }
+}
+
+export function retryFetchConfig(manual?: boolean) {
+  if (!manual || undefined) {
+    if (CONFIGreconnectAttempts.value < CONFIGmaxReconnectAttempts) {
+      CONFIGreconnectAttempts.value++;
+      console.log(`Getting Config... (${CONFIGreconnectAttempts.value}/${CONFIGmaxReconnectAttempts})`);
+
+      setTimeout(() => {
+        fetchConfig();
+      }, reconnectDelay);
+
+    } else {
+      console.error('Max config get attempts reached');
+    }
+  } else {
+    fetchConfig()
+  }
 }
 
 export async function fetchInfo() {
     hasAppInfo.value = false
     try {
-      const response = await fetch('http://localhost:9234/api/info')
+      const response = await fetch(uriInfo)
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      var info = await response.json() as Config
-      console.log('Config loaded:', info)
+      var info = await response.json() as AppInfo
+      console.log('Info loaded:', info)
 
       Object.assign(Info, info)
-
-    } catch (err) {
-      console.error('Failed to load config:', err)
-    } finally {
       hasAppInfo.value = true
+    } catch (err) {
+      console.error('Failed to load app info:', err)
+      retryFetchInfo()
+      hasAppInfo.value = false
     }
+}
+
+export function retryFetchInfo(manual?: boolean) {
+  if (!manual || undefined) {
+    if (APPreconnectAttempts.value < APPmaxReconnectAttempts) {
+      APPreconnectAttempts.value++;
+      console.log(`Getting app info... (${APPreconnectAttempts.value}/${APPmaxReconnectAttempts})`);
+
+      setTimeout(() => {
+        fetchInfo();
+      }, reconnectDelay);
+
+    } else {
+      console.error('Max app info get attempts reached');
+    }
+  } else {
+    fetchInfo()
+  }
 }
 
 export async function resetToDefault() {

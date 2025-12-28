@@ -1,15 +1,9 @@
 using UnityEngine;
 
 using EmbedIO;
-using EmbedIO.Routing;
-using EmbedIO.WebSockets;
-using EmbedIO.Actions;
 
 using System;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Text;
 
 using QuestSLAM.config;
@@ -21,9 +15,12 @@ namespace QuestSLAM.web.Handlers
     {
         public override bool IsFinalHandler => true;
         private ConfigManager config;
-        public APIHandler(ConfigManager configContext) : base("/api")
+        private AppInfoSchema app;
+
+        public APIHandler(ConfigManager configContext, AppInfoSchema appContext) : base("/api")
         {
             config = configContext;
+            app = appContext;
         }
 
         protected override async Task OnRequestAsync(IHttpContext context)
@@ -37,6 +34,14 @@ namespace QuestSLAM.web.Handlers
                 else if (context.RequestedPath == "/info")
                 {
                     InfoHandler(context);
+                } 
+                else if (context.RequestedPath == "/resetPose")
+                {
+                    ResetPoseHandler(context);
+                }
+                else if (context.RequestedPath == "/restart")
+                {
+                    RestartAppHandler(context);
                 }
             }
             catch (Exception ex)
@@ -53,6 +58,7 @@ namespace QuestSLAM.web.Handlers
                 try
                 {
                     var current = config.GetConfig();
+                    
                     var currentJson = new dataschema.Config
                     {
                         headsetID = current.headsetID,
@@ -62,7 +68,7 @@ namespace QuestSLAM.web.Handlers
                         AutoStart = current.AutoStart,
                         AprilTagTracking = current.AprilTagTracking
                     };
-
+                    
                     var data = JsonUtility.ToJson(currentJson);
 
                     context.Response.StatusCode = 200;
@@ -81,19 +87,22 @@ namespace QuestSLAM.web.Handlers
                 try
                 {
                     string body = await context.GetRequestBodyAsStringAsync();
-                    var data = JsonUtility.FromJson<dataschema.Config>(body);
+                    var data = JsonUtility.FromJson<ConfigManager.Config>(body);
 
-                    var newConfig = new Config
+                    /*
+                    var newConfig = new ConfigManager.Config
                     {
                         headsetID = data.headsetID,
                         rosConnectionIP = data.rosConnectionIP,
                         trackingspeed = data.trackingspeed,
                         toggleCamera = data.toggleCamera,
                         AutoStart = data.AutoStart,
-                        AprilTagTracking = data.AprilTagTracking
+                        AprilTagTracking = data.AprilTagTracking,
+                        AprilTagFamily = data.AprilTagFamily
                     };
+                    */
 
-                    config.Save(newConfig);
+                    config.Save(data);
                 }
                 catch (Exception ex)
                 {
@@ -115,17 +124,18 @@ namespace QuestSLAM.web.Handlers
             {
                 try
                 {
-                    var AppInfo = new dataschema.AppInfo
+                    
+                    var newInfo = new dataschema.AppInfo
                     {
-                        AppVersion = Application.version,
-                        AppName = Application.productName,
-                        BuildDate = File.GetLastWriteTime(Application.dataPath).ToString("yyyy-MM-dd HH:mm:ss"),
-                        HorisionOSVersion = SystemInfo.operatingSystem,
-                        UnityVersion = Application.unityVersion,
-                        DeviceModel = SystemInfo.deviceModel,
+                        AppVersion = app.AppVersion,
+                        AppName = app.AppName,
+                        BuildDate = app.BuildDate,
+                        HorisionOSVersion = app.HorisionOSVersion,
+                        UnityVersion = app.UnityVersion,
+                        DeviceModel = app.DeviceModel
                     };
 
-                    var data = JsonUtility.ToJson(AppInfo);
+                    var data = JsonUtility.ToJson(newInfo);
 
                     context.Response.StatusCode = 200;
                     await context.SendStringAsync(data, "application/json", Encoding.UTF8);
@@ -138,6 +148,57 @@ namespace QuestSLAM.web.Handlers
                     await context.SendStringAsync(new { error = ex.Message }.ToString(), "application/json", Encoding.UTF8);
                 }
             } 
+            else
+            {
+                context.Response.StatusCode = 405;
+                await context.SendStringAsync(new { error = "Method not allowed" }.ToString(), "application/json", Encoding.UTF8);
+            }
+        }
+
+        private async void ResetPoseHandler(IHttpContext context)
+        {
+            if (context.Request.HttpVerb == HttpVerbs.Get)
+            {
+                
+            }
+            else
+            {
+                context.Response.StatusCode = 405;
+                await context.SendStringAsync(new { error = "Method not allowed" }.ToString(), "application/json", Encoding.UTF8);
+            }
+        }
+
+        private async void RestartAppHandler(IHttpContext context)
+        {
+            if (context.Request.HttpVerb == HttpVerbs.Get)
+            {
+                #if UNITY_ANDROID && !UNITY_EDITOR
+                    AndroidJavaObject activity = new AndroidJavaClass("com.unity3d.player.UnityPlayer")
+                        .GetStatic<AndroidJavaObject>("currentActivity");
+
+                    AndroidJavaObject intent = activity.Call<AndroidJavaObject>("getPackageManager")
+                        .Call<AndroidJavaObject>("getLaunchIntentForPackage", 
+                            activity.Call<string>("getPackageName"));
+
+                    activity.Call("startActivity", intent);
+
+                    AndroidJavaClass jc = new AndroidJavaClass("android.os.Process");
+                    Invoke(jc.CallStatic("killProcess", jc.CallStatic<int>("myPid")), 1f);
+                #endif
+            }
+            else
+            {
+                context.Response.StatusCode = 405;
+                await context.SendStringAsync(new { error = "Method not allowed" }.ToString(), "application/json", Encoding.UTF8);
+            }
+        }
+
+        private async void ReconnectDataTransport(IHttpContext context)
+        {
+            if (context.Request.HttpVerb == HttpVerbs.Get)
+            {
+                
+            }
             else
             {
                 context.Response.StatusCode = 405;

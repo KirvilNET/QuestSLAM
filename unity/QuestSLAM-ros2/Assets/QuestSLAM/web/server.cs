@@ -1,38 +1,33 @@
 using UnityEngine;
 
 using EmbedIO;
-using EmbedIO.Routing;
-using EmbedIO.WebSockets;
-using EmbedIO.Actions;
-using EmbedIO.Net;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-using QuestSLAM.web;
 using QuestSLAM.web.Handlers;
 using QuestSLAM.config;
 using QuestSLAM.Utils;
+using QuestSLAM.web.dataschema;
 
+using System.Threading.Tasks;
 
 namespace QuestSLAM.web.server
 {
     public class webserver : MonoBehaviour
     {
         private WebServer server;
-
         private Websocket wsModule;
         private APIHandler API;
 
-        private util.FileManager fs = new util.FileManager();
+        private util.FileManager fs;
 
         public bool isRunning = false;
-        public string url = "http://localhost:9234";
+        public string url;
 
+        public async Task StartServer(ConfigManager configcontext, AppInfoSchema appcontext) 
+        {   
+            fs = new util.FileManager();
 
-        public void StartServer(ConfigManager configcontext) 
-        {
             if (isRunning)
             {
                 QueuedLogger.LogWarning("Server is already running");
@@ -40,30 +35,35 @@ namespace QuestSLAM.web.server
             }
 
             string staticPath = fs.GetStaticFilesPath();
+  
+            #if UNITY_ANDROID && !UNITY_EDITOR
+                await fs.ExtractAndroidUIFilesAsync(staticPath);
+            #else
+                fs.DoStaticFilesExist(staticPath);
+                await Task.CompletedTask;
+            #endif
 
             try 
             {
                 #if UNITY_ANDROID && !UNITY_EDITOR
-                    url = $"http://0.0.0.0:9234}"; // Bind to all interfaces on Quest
+                    url = $"http://*:9234"; // Bind to all interfaces on Quest
                 #else
                     url = "http://localhost:9234"; // Local testing
                 #endif
                 
                 wsModule = new Websocket();
-                API = new APIHandler(configcontext);
+                API = new APIHandler(configcontext, appcontext);
 
                 server = new WebServer(o => o.WithUrlPrefix(url).WithMode(HttpListenerMode.EmbedIO))
                     .WithCors()
                     .WithModule(wsModule)
                     .WithModule(API)
-                    .WithStaticFolder("/", staticPath, true);
-                    
-                    
+                    .WithStaticFolder("/", staticPath, true);                    
 
                 server.Start();
                 isRunning = true;
 
-                QueuedLogger.Log($"EmbedIO Server Started on http://localhost:9234");
+                QueuedLogger.Log($"EmbedIO Server Started on {url}");
                 QueuedLogger.Log($"WebSocket: ws://localhost:9234/ws");
             }
             catch (Exception e)
@@ -75,24 +75,45 @@ namespace QuestSLAM.web.server
 
         #region Senders
 
-        public void SendTelemetry(dataschema.TelemetryPacket telemetry)
+        public void SendTelemetry(TelemetryPacket telemetry)
         {
             if (wsModule != null && isRunning)
             {
-                var packet = new dataschema.Packet<dataschema.TelemetryPacket>("telemetry", telemetry);
+                var packet = new Packet<TelemetryPacket>("telemetry", telemetry);
                 string json = JsonUtility.ToJson(packet);
                 wsModule.BroadcastMessage(json);
             }
         }
 
-        public void SendLog(dataschema.LogPacket log)
+        public void SendLog(QueuedLogger.LogEntry entry, bool hasException = false)
         {
-            if (wsModule != null && isRunning)
+            if (wsModule == null || !isRunning) return;
+
+            LogPacket log;
+            string time = DateTimeOffset.FromUnixTimeMilliseconds(entry.Timestamp).LocalDateTime.ToLongTimeString();
+
+            switch (entry.Level)
             {
-                var packet = new dataschema.Packet<dataschema.LogPacket>("log", log);
-                string json = JsonUtility.ToJson(packet);
-                wsModule.BroadcastMessage(json);
+                case QueuedLogger.Levels.INFO:
+                    log = new LogPacket(entry.Message, QueuedLogger.Levels.INFO, time);
+                    break;
+                case QueuedLogger.Levels.WARNING:
+                    log = new LogPacket(entry.Message, QueuedLogger.Levels.WARNING, time);
+                    break;
+                case QueuedLogger.Levels.ERROR:
+                    if (hasException) 
+                        log = new LogPacket(entry.Message, QueuedLogger.Levels.ERROR, time, entry.Exception);
+                    else 
+                        log = new LogPacket(entry.Message, QueuedLogger.Levels.ERROR, time);
+                    break;
+                default:
+                    return;
             }
+
+            var packet = new Packet<LogPacket>("log", log);
+            string json = JsonUtility.ToJson(packet);
+            wsModule.BroadcastMessage(json);
+                
         }
         #endregion
 

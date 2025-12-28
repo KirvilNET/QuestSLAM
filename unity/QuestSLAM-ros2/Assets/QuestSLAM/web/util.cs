@@ -11,14 +11,19 @@ using QuestSLAM.Utils;
 
 namespace QuestSLAM.web.util
 {
-    public class FileManager : MonoBehaviour
+    public class FileManager
     {
+        private string path;
         public string GetStaticFilesPath()
         {
             #if UNITY_ANDROID && !UNITY_EDITOR
-                return Path.Combine(Application.persistentDataPath, "web");
+                path = Path.Combine(Application.persistentDataPath, "web");
+                QueuedLogger.Log($"Static file path: path");
+                return path;
             #else
-                return Path.Combine(Application.streamingAssetsPath, "web");
+                path = Path.Combine(Application.streamingAssetsPath, "web");
+                QueuedLogger.Log($"Static file path: path");
+                return path;
             #endif
         }
 
@@ -34,6 +39,7 @@ namespace QuestSLAM.web.util
                 "web",
                 "fallback.html"
             );
+
             string fallbackTargetPath = Path.Combine(path, "index.html");
 
             try
@@ -89,7 +95,7 @@ namespace QuestSLAM.web.util
             await ExtractAndroidFileAsync("web/index.html", Path.Combine(targetPath, "index.html"));
             await ExtractAndroidFileAsync("web/assets/main.css", Path.Combine(assetsDir, "main.css"));
             await ExtractAndroidFileAsync("web/assets/main.js", Path.Combine(assetsDir, "main.js"));
-            await ExtractAndroidFileAsync("web/VR.svg", Path.Combine(targetPath, "logo.svg"));
+            await ExtractAndroidFileAsync("web/VR.svg", Path.Combine(targetPath, "VR.svg"));
 
             //await ExtractAndroidFileAsync("web/logo-dark.svg", Path.Combine(targetPath, "logo-dark.svg"));
 

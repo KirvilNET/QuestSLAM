@@ -25,7 +25,7 @@ namespace RosSharp.RosBridgeClient
     public enum RosVersion {ROS1 = 0, ROS2 = 1}
     public class RosConnector : MonoBehaviour
     {
-        [HideInInspector]
+        
         public RosVersion selectedRosVersion = RosVersion.ROS2;
         public int SecondsTimeout = 10;
         public RosSocket RosSocket { get; private set; }
