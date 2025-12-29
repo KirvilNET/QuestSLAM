@@ -56,7 +56,7 @@ jobs:
       
       - name: Determine Version
         id: version-info
-        uses: ./.github/actions/determine-version/action.yml
+        uses: ./.github/actions/dertermine-version/action.yml
         with:
           version: ${{ inputs.version }}
 
