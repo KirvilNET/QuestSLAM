@@ -1,67 +1,69 @@
-name: 'Setup Unity Environment'
-description: 'Sets up .NET, NuGetForUnity, and Unity Library cache'
+name: "Setup Unity Environment"
+description: "Sets up .NET, NuGetForUnity, and Unity Library cache"
 
 inputs:
-    version:
-        description: 'Version string to use [YEAR]-[MAJOR].[MINOR].[PATCH]-[TYPE] (optional, auto-generated if not provided)'
-        required: false
-        default: '2025-1.0.0-beta'
-  
-    unity-project-path:
-        description: 'Path to Unity project'
-        required: false
-        default: 'unity/QuestSLAM-ros2'
-  
-    dotnet-version:
-        description: '.NET version to install'
-        required: false
-        default: '8.x'
+  version:
+    description: "Version string to use [YEAR]-[MAJOR].[MINOR].[PATCH]-[TYPE] (optional, auto-generated if not provided)"
+    required: false
+    default: "2025-1.0.0-beta"
+  webui-artifact-id:
+    description: "webui-artifact-id"
+    required: true
+  unity-project-path:
+    description: "Path to Unity project"
+    required: false
+    default: "unity/QuestSLAM-ros2"
+
+  dotnet-version:
+    description: ".NET version to install"
+    required: false
+    default: "8.x"
 
 runs:
-    using: 'composite'
-    steps:
-        - name: Checkout repository
-          id: checkout-repo
-          uses: actions/checkout@v4
-          with:
-            ref: ${{ github.event.pull_request.head.sha || github.ref }}
-            sparse-checkout: |
-              .github
-            sparse-checkout-cone-mode: false
-            lfs: true
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      id: checkout-repo
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha || github.ref }}
+        sparse-checkout: |
+          .github
+        sparse-checkout-cone-mode: false
+        lfs: true
 
-        - name: Determine Version
-          id: version-info
-          uses: ./.github/actions/dertermine-version/
-          with:
-            version: ${{ inputs.version }}
+    - name: Determine Version
+      id: version-info
+      uses: ./.github/actions/dertermine-version/
+      with:
+        version: ${{ inputs.version }}
 
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v4
-          with:
-            dotnet-version: ${{ inputs.dotnet-version }}
-        
-        - name: Install NuGetForUnity
-          shell: pwsh
-          run: dotnet tool install --global NuGetForUnity.Cli
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
 
-        - name: Restore NuGet Packages
-          shell: pwsh
-          run: nugetforunity restore ${{ inputs.unity-project-path }}/
+    - name: Install NuGetForUnity
+      shell: pwsh
+      run: dotnet tool install --global NuGetForUnity.Cli
 
-        - name: Restore Generated Web UI
-          uses: actions/download-artifact@v5
-          with:
-            name: QuestSLAM-webui-${{ steps.version-info.outputs.version }}
-            path: ${{ inputs.unity-project-path }}/Assets/StreamingAssets/web      
+    - name: Restore NuGet Packages
+      shell: pwsh
+      run: nugetforunity restore ${{ inputs.unity-project-path }}/
 
-        - name: Cache Unity Library
-          id: cache-unity
-          uses: actions/cache@v4
-          with:
-            path: ${{ inputs.unity-project-path }}/Library
-            key: Library-QuestSLAM-${{ inputs.cache-key-suffix }}-${{ hashFiles(format('{0}/Packages/manifest.json', inputs.unity-project-path)) }}
-            restore-keys: |
-              Library-QuestSLAM-${{ inputs.cache-key-suffix }}-
-              Library-QuestSLAM-
-              Library-
+    - name: Restore Generated Web UI
+      uses: actions/download-artifact@v5
+      with:
+        artifact-ids: ${{ inputs.webui-artifact-id }}
+        path: ${{ inputs.unity-project-path }}/Assets/StreamingAssets/web
+
+    - name: Cache Unity Library
+      id: cache-unity
+      uses: actions/cache@v4
+      with:
+        path: ${{ inputs.unity-project-path }}/Library
+        key: Library-QuestSLAM-${{ inputs.cache-key-suffix }}-${{ hashFiles(format('{0}/Packages/manifest.json', inputs.unity-project-path)) }}
+        restore-keys: |
+          Library-QuestSLAM-${{ inputs.cache-key-suffix }}-
+          Library-QuestSLAM-
+          Library-

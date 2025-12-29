@@ -7,6 +7,10 @@ on:
         description: 'Version string to use (optional, auto-generated if not provided)'
         required: false
         type: string
+      webui-artifact-id:
+        description: "webui-artifact-id"
+        required: true
+        type: string
       build-type: 
         description: 'The build type'
         required: true
@@ -72,6 +76,7 @@ jobs:
         with:
           version: ${{ steps.version-info.outputs.version }}
           unity-project-path: ./unity/QuestSLAM-ros2
+          webui-artifact-id: ${{ inputs.webui-artifact-id }}
 
       - name: Build Unity Project
         uses: game-ci/unity-builder@v4

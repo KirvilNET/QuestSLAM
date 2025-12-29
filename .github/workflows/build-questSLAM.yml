@@ -90,3 +90,4 @@ jobs:
     with:
       version: ${{ inputs.version }}
       build-type: ${{ inputs.build-type }}
+      webui-artifact-id: ${{ needs.build-webui.outputs.artifact-id }}
