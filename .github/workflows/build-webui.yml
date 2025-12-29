@@ -1,0 +1,54 @@
+name: Build Web UI
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: "Version string to use (optional, auto-generated if not provided)"
+        required: false
+        type: string
+    outputs:
+      artifact-id:
+        description: "The artifact ID for the built web UI"
+        value: ${{ jobs.build-webui.outputs.artifact-id }}
+
+jobs:
+  build-webui:
+    name: Build WebUI
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.upload-web-ui.outputs.artifact-id }}
+    steps:
+      - name: Checkout repository
+        id: checkout-repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+          sparse-checkout: |
+            unity/Assets/StreamingAssets/ui
+            questslam-webui
+            .github
+          sparse-checkout-cone-mode: false
+          lfs: true
+
+      - name: Setup Bun
+        id: setup-bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ./questslam-webui/.bun-version
+
+      - name: Install dependencies
+        working-directory: ./questslam-webui
+        run: bun install
+
+      - name: Build WebUI
+        working-directory: ./questslam-webui
+        run: bun run build
+
+      - name: Upload artifact
+        id: upload-web-ui
+        uses: actions/upload-artifact@v4
+        with:
+          name: questslam-webui-${{ inputs.version }}
+          path: unity/Assets/StreamingAssets/ui
+          retention-days: 7
