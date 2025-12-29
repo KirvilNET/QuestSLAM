@@ -83,6 +83,10 @@ jobs:
     needs: [determine-publishable-changes, build-webui]
     name: Build the QuestSLAM APK
     uses: ./.github/workflows/build-unity.yml
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
     with:
       version: ${{ inputs.version }}
       build-type: ${{ inputs.build-type }}
