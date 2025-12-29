@@ -55,7 +55,7 @@ jobs:
       
       - name: Determine Version
         id: version-info
-        uses: ./.github/actions/determine-version
+        uses: ./.github/actions/determine-version/action.yml
         with:
           version: ${{ inputs.version }}
 
@@ -67,7 +67,7 @@ jobs:
             Library-
       
       - name: Setup Unity Environment
-        uses: ./.github/actions/setup-unity-environment
+        uses: ./.github/actions/setup-unity-environment/action.yml
         with:
           version: ${{ steps.version-info.outputs.version }}
           unity-project-path: ./unity/QuestSLAM-ros2
