@@ -22,7 +22,7 @@
 
     watch(
         () => props.logs,
-        (x) => {
+        () => {
           if (props.autoScroll) {
             if (logContainer != null) logContainer.value!.scrollTop = logContainer.value!.scrollHeight
           }

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-    import { ref } from 'vue'
+    //import { ref } from 'vue'
     import type { AppInfo } from '../QuestSLAM/schema';
     
-
     const props = defineProps<{
         AppInfo: AppInfo
     }>();

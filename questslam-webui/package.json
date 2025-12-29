@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.4",
+    "@preline/collapse": "^3.2.3",
     "@preline/dropdown": "^3.2.3",
     "@tailwindcss/vite": "^4.1.18",
     "@tweenjs/tween.js": "^25.0.0",

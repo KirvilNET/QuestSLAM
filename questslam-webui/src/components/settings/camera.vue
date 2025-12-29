@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { toggleCamera, AprilTagTracking, save, resetToDefault } from '../QuestSLAM/settings.ts'
+    import { AprilTagTracking, save, resetToDefault } from '../QuestSLAM/settings.ts'
     import type { Config } from '../QuestSLAM/schema.ts'
 
     

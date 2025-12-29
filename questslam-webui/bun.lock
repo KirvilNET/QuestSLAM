@@ -6,6 +6,7 @@
       "name": "questslam-webui",
       "dependencies": {
         "@floating-ui/dom": "^1.7.4",
+        "@preline/collapse": "^3.2.3",
         "@preline/dropdown": "^3.2.3",
         "@tailwindcss/vite": "^4.1.18",
         "@tweenjs/tween.js": "^25.0.0",
@@ -104,6 +105,8 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
+
+    "@preline/collapse": ["@preline/collapse@3.2.3", "", {}, "sha512-9h3idfw3+8TJB4Apc2kki+DIunq2gahmwLJkmRmK6r2Z3ONkraKAvKR8ZeyxmHsjucebfcKIQwec3nqlsu86nQ=="],
 
     "@preline/dropdown": ["@preline/dropdown@3.2.3", "", { "dependencies": { "@floating-ui/dom": "^1.6.13" } }, "sha512-cvTJQ8rPdb6QP9tfPwdCgjhif3+/UR1b6edDETURSaTCBzGtfQhoiSCFZAn1fNBwJEE0yYH007vcp+VOEDTJYw=="],
 

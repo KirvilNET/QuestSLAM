@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import HSCollapse from '@preline/collapse'
-    import { ref, onMounted, computed } from 'vue'
+    import { onMounted } from 'vue'
     import type { LogEntry } from '../QuestSLAM/schema.ts'
 
     const styleText = (level: LogEntry['level']) => {
