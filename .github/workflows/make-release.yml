@@ -1,0 +1,92 @@
+name: Make release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version string to use [YEAR]-[MAJOR].[MINOR].[PATCH]-[TYPE] (optional, auto-generated if not provided)'
+        required: true
+        type: string
+      nightly:
+        description: decides if this is a nightly release
+        required: true
+        type: boolean
+      build-type:
+        description: 'The type of build. Can be release or dev. Default is dev'
+        required: false
+        type: choice
+        options: [release, dev]
+        default: dev 
+
+jobs:
+  build-questslam:
+    name: Build QuestSLAM
+    uses: ./.github/workflows/build-QuestSLAM.yml
+    with:
+      version: ${{ inputs.version }}
+      force-build: true
+      build-type: release
+  
+  github-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [build-questslam]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Determine Version
+        id: version-info
+        uses: ./.github/actions/determine-version
+        with:
+          version: ${{ inputs.version }}
+
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: "questnav-apk-${{ steps.version-info.outputs.version }}"
+          path: "release"
+
+      - name: Release to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          tag_name: ${{ steps.version-info.outputs.version }}
+          files: release/**
+          draft: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  github-nightly:
+    if: ${{ inputs.nightly }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: [build-questslam]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Determine Version
+        id: version-info
+        uses: ./.github/actions/determine-version
+        with:
+          version: ${{ inputs.version }}
+
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: "questnav-apk-${{ steps.version-info.outputs.version }}"
+          path: "release"
+
+      - name: Release to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          tag_name: ${{ steps.version-info.outputs.version }}
+          files: release/**
+          draft: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+

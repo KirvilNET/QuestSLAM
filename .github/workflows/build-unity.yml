@@ -1,0 +1,98 @@
+name: Build the QuestSLAM APK
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version string to use (optional, auto-generated if not provided)'
+        required: false
+        type: string
+      build-type: 
+        description: 'The build type'
+        required: true
+        type: string
+        default: dev
+    secrets:
+      UNITY_LICENSE:
+        description: 'Unity License'
+        required: true
+      UNITY_EMAIL:
+        description: 'Unity Email'
+        required: true
+      UNITY_PASSWORD:
+        description: 'Unity Password'
+        required: true
+    outputs:
+      version:
+        description: 'The version string used for this build'
+        value: ${{ jobs.build-apk.outputs.version }} 
+      version-code:
+        description: 'The version code used for this build'
+        value: ${{ jobs.build-apk.outputs.version-code }}
+      apk-artifact-id:
+        description: 'The artifact ID for the APK'
+        value: ${{ jobs.build-apk.outputs.artifact-id }}
+
+jobs:
+  build-apk:
+    if: inputs.build-type == 'dev'
+    name: Build APK
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version-info.outputs.version }}
+      version-code: ${{ steps.version-info.outputs.version-code }}
+      artifact-id: ${{ steps.upload-apk.outputs.artifact-id }}
+        
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            unity
+            .github
+          sparse-checkout-cone-mode: false
+          lfs: true
+      
+      - name: Determine Version
+        id: version-info
+        uses: ./.github/actions/determine-version
+        with:
+          version: ${{ inputs.version }}
+
+      - uses: actions/cache@v3
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+      
+      - name: Setup Unity Environment
+        uses: ./.github/actions/setup-unity-environment
+        with:
+          version: ${{ steps.version-info.outputs.version }}
+          unity-project-path: ./unity/QuestSLAM-ros2
+
+      - name: Build Unity Project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: unity/QuestSLAM-ros2
+          targetPlatform: Android
+          buildMethod: QuestSLAM.build
+          buildProfile: 'Assets/Settings/Build Profiles/Quest.asset'
+          customParameters: -release false -name QuestSLAM-${{ steps.version-info.outputs.version }}
+          versioning: Custom
+          version: ${{ steps.version-info.outputs.version }}
+          androidVersionCode: ${{ steps.version-info.outputs.version-code }}
+
+      - name: Upload APK Artifact
+        id: upload-apk
+        uses: actions/upload-artifact@v4
+        with:
+          name: questslam-apk-${{ steps.version-info.outputs.version }}
+          path: build/Android/*.apk
+          retention-days: 7
+              
