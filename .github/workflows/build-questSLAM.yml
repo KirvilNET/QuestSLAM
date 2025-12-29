@@ -39,6 +39,16 @@ on:
         required: false
         type: string
         default: dev
+    secrets:
+      UNITY_LICENSE:
+        description: 'Unity License'
+        required: true
+      UNITY_EMAIL:
+        description: 'Unity Email'
+        required: true
+      UNITY_PASSWORD:
+        description: 'Unity Password'
+        required: true
 
 
 jobs:
