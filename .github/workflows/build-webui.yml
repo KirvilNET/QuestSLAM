@@ -35,7 +35,7 @@ jobs:
         id: setup-bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: ./questslam-webui/.bun-version
+          bun-version: latest
 
       - name: Install dependencies
         working-directory: ./questslam-webui
