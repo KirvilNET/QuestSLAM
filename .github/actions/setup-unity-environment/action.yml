@@ -20,10 +20,26 @@ inputs:
 runs:
     using: 'composite'
     steps:
+        - name: Checkout repository
+          id: checkout-repo
+          uses: actions/checkout@v4
+          with:
+            ref: ${{ github.event.pull_request.head.sha || github.ref }}
+            sparse-checkout: |
+              .github
+            sparse-checkout-cone-mode: false
+            lfs: true
+
+        - name: Determine Version
+          id: version-info
+          uses: ./.github/actions/dertermine-version/
+          with:
+            version: ${{ inputs.version }}
+
         - name: Setup .NET
           uses: actions/setup-dotnet@v4
           with:
-            version: ${{ inputs.version }}
+            dotnet-version: ${{ inputs.dotnet-version }}
         
         - name: Install NuGetForUnity
           shell: pwsh
@@ -37,7 +53,7 @@ runs:
           uses: actions/download-artifact@v5
           with:
             name: QuestSLAM-webui-${{ steps.version-info.outputs.version }}
-            path: ${{ inputs.unity-project-path }}/Assets/StreamingAssets/ui      
+            path: ${{ inputs.unity-project-path }}/Assets/StreamingAssets/web      
 
         - name: Cache Unity Library
           id: cache-unity

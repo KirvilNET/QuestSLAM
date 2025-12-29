@@ -68,7 +68,7 @@ jobs:
               - 'unity/**.meta'
             webui:
               - 'questslam-webui/**'
-              - 'unity/Assets/StreamingAssets/ui/**'
+              - 'unity/QuestSLAM-ros2/Assets/StreamingAssets/web/**'
           base: ${{ steps.get-last-release.outputs.tag }}
 
   build-webui:

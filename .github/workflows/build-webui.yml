@@ -25,11 +25,16 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
           sparse-checkout: |
-            unity/Assets/StreamingAssets/ui
+            unity/QuestSLAM-ros2/Assets/StreamingAssets/web
             questslam-webui
             .github
           sparse-checkout-cone-mode: false
           lfs: true
+      - name: Determine Version
+        id: version-info
+        uses: ./.github/actions/dertermine-version/
+        with:
+          version: ${{ inputs.version }}
 
       - name: Setup Bun
         id: setup-bun
@@ -49,6 +54,6 @@ jobs:
         id: upload-web-ui
         uses: actions/upload-artifact@v4
         with:
-          name: questslam-webui-${{ inputs.version }}
-          path: unity/Assets/StreamingAssets/ui
+          name: questslam-webui-${{ steps.version-info.outputs.version }}
+          path: unity/QuestSLAM-ros2/Assets/StreamingAssets/web
           retention-days: 7
