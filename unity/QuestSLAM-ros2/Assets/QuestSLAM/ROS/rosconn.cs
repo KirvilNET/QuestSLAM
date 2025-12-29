@@ -13,9 +13,9 @@ namespace QuestSLAM.ros
     public enum RosVersion {ROS1 = 0, ROS2 = 1}
     public class ROSConnector: MonoBehaviour
     {
-        [SerializeField] public int SecondsTimeout { get; set; } = 10;
-        [SerializeField] public int MaxReconnectAttempts { get; set; } = 5;
-        [SerializeField] public int ReconnectAttempts { get; set; } = 0;
+        public int SecondsTimeout { get; set; } = 10;
+        public int MaxReconnectAttempts { get; set; } = 5;
+        public int ReconnectAttempts { get; set; } = 0;
 
         public Protocol protocol;
         public RosSocket.SerializerEnum Serializer;
