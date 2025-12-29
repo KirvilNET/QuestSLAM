@@ -1,0 +1,87 @@
+name: Build QuestSLAM
+
+on: 
+    workflow_dispatch:
+        inputs:
+            version:
+                description: 'Version string to use [YEAR]-[MAJOR].[MINOR].[PATCH]-[TYPE] (optional, auto-generated if not provided)'
+                required: false
+                type: string
+                default: '2025-1.0.0-beta'
+            build-type:
+                description: 'The type of build. Can be release or dev. Default is dev'
+                required: false
+                type: choice
+                options: [release, dev]
+                default: dev      
+
+jobs:
+    determine-publishable-changes:
+        runs-on: ubuntu-latest
+        outputs:
+            csharp-changed: ${{ steps.changes.outputs.csharp }}
+            webui-changed: ${{ steps.changes.outputs.web-ui }}
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+                
+            - name: Get last release tag
+              id: get-last-release
+              uses: WyriHaximus/github-action-get-previous-tag@v1 
+                
+            - name: Determine publishable changes
+              uses: dorny/paths-filter@v3
+              id: changes
+              with:
+                filters: |
+                  csharp:
+                    - 'unity/**.cs'
+                    - 'unity/**.json'
+                    - 'unity/**.unity'
+                    - 'unity/**.meta'
+                  webui:
+                    - 'questslam-webui/**'
+                    - 'unity/Assets/StreamingAssets/ui/**'
+                base: ${{ steps.get-last-release.outputs.tag }}              
+
+    build-webui:
+        needs: [determine-publishable-changes]
+        name: Build WebUI
+        uses: ./.github/workflows/build-webui.yml
+        with:
+            version: ${{ inputs.version }}
+            
+
+    build-apk:
+        name: Build the QuestSLAM App
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                lfs: true
+
+            - uses: actions/cache@v3
+              with:
+                path: Library
+                key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+                restore-keys: |
+                  Library-
+
+            - name: Build Unity Projectt
+              uses: game-ci/unity-builder@v4
+              env:
+                UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+                UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+                UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+              with:
+                targetPlatform: Android
+                projectPath: unity/QuestSLAM-ros2
+                buildProfile: 'Assets/Settings/Build Profiles/Quest.asset'
+
+            - uses: actions/upload-artifact@v4
+              with:
+                name: Build
+                path: build
