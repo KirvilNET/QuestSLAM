@@ -41,7 +41,7 @@ jobs:
   build-apk:
     if: inputs.build-type == 'dev'
     name: Build APK
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux]
     outputs:
       version: ${{ steps.version-info.outputs.version }}
       version-code: ${{ steps.version-info.outputs.version-code }}
