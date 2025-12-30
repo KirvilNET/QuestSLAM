@@ -56,7 +56,7 @@ jobs:
             unity
             .github
           sparse-checkout-cone-mode: false
-          lfs: true
+          lfs: false
       
       - name: Determine Version
         id: version-info
