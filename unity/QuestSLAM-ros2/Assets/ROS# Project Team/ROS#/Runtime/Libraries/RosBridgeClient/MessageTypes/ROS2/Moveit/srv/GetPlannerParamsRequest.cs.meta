@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 75d26224590fb4a44b1a41a4831b83e6
+guid: e296f50a2a95b8d47abc4f875a9317cd
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/srv/GetPlannerParamsRequest.cs
-  uploadId: 761549
+  uploadId: 774722

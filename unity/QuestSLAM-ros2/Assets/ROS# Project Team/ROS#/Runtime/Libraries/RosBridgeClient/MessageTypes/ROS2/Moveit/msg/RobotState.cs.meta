@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cf8a19433bf210e42aec76c55f595d2d
+guid: 26cb3e4bdfcbeda439e8a799f173b28c
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/msg/RobotState.cs
-  uploadId: 761549
+  uploadId: 774722

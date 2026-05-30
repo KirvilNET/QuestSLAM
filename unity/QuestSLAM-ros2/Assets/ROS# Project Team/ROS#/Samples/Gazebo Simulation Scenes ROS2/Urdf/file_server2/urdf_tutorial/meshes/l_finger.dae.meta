@@ -4,9 +4,9 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Samples/Gazebo Simulation Scenes ROS2/Urdf/file_server2/urdf_tutorial/meshes/l_finger.dae
-  uploadId: 761549
+  uploadId: 774722
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []

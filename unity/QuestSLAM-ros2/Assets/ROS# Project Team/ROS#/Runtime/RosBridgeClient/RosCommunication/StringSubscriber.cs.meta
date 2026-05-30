@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dbdb92ae9dfa79e4ba69e23b822cd90f
+guid: 8d292bf04a3c34f469e14723a9968e7d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/RosBridgeClient/RosCommunication/StringSubscriber.cs
-  uploadId: 761549
+  uploadId: 774722

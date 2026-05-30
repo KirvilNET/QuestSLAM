@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 965fb8c5275b77742b86dc804f4317d9
+guid: c86de1add365753418b10bc9c68191dc
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Geometry/msg/PointStamped.cs
-  uploadId: 761549
+  uploadId: 774722

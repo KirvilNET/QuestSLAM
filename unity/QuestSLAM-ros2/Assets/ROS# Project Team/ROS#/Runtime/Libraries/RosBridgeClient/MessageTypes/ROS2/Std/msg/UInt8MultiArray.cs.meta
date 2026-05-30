@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: dbcd39b7c7dbf5e41be1090331aa0f48
+guid: 11b34d23bd37b3d4eb9a8c1d2af0631d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Std/msg/UInt8MultiArray.cs
-  uploadId: 761549
+  uploadId: 774722

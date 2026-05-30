@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: aa6a0efc2b1ea8e4aa1e4e170b31a0e8
+guid: 7b1f057602cc8044f89bccddead8b5e7
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/msg/RobotTrajectory.cs
-  uploadId: 761549
+  uploadId: 774722

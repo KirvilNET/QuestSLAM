@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3736584ded6b65644b6b0925a3a2cb1c
+guid: 1629fa27836f759449638b17051e27a6
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/RosBridgeClient/RosCommunication/RawImageSubscriber.cs
-  uploadId: 761549
+  uploadId: 774722

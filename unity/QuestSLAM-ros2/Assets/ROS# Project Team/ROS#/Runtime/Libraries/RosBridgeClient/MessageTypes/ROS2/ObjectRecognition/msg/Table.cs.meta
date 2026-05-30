@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c389792e58384cf4d9437df1994da779
+guid: 25ef5d0bb5ad6e944b462b27e546ad93
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/ObjectRecognition/msg/Table.cs
-  uploadId: 761549
+  uploadId: 774722

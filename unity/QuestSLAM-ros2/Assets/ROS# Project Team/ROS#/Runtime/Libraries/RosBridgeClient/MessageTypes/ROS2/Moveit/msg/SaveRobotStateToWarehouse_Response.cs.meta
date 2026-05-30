@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b0071cf92f74ca34aa2a599eaa14ff96
+guid: c70f0820c67b1e246a39dd4701403c2a
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/msg/SaveRobotStateToWarehouse_Response.cs
-  uploadId: 761549
+  uploadId: 774722

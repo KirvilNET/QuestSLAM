@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5e15c3966f0b9ac428b79513db16e8b7
+guid: a10f7908fce7c8241adbe2bd775526ad
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/action/GlobalPlannerActionGoal.cs
-  uploadId: 761549
+  uploadId: 774722

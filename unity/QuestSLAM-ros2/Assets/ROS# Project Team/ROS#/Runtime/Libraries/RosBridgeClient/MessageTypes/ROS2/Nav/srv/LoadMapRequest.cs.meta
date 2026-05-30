@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 70d33a0e038e1c94aaecb17b58b9ffce
+guid: 8b00d7d1a6aee2940b85f7f4319c071b
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Nav/srv/LoadMapRequest.cs
-  uploadId: 761549
+  uploadId: 774722

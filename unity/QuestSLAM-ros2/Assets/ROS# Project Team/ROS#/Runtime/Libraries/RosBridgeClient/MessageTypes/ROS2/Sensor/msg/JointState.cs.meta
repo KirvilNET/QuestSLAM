@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 23cecc236bf77df42907558975bd2834
+guid: f44e7e3baa5ffa64d9b7829aa0931aae
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Sensor/msg/JointState.cs
-  uploadId: 761549
+  uploadId: 774722

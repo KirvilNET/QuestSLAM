@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fb7761474902188499088e69271fd386
+guid: 93d5e4ced1a9d694c9e3b89ffbdbf565
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Geometry/msg/PoseWithCovariance.cs
-  uploadId: 761549
+  uploadId: 774722

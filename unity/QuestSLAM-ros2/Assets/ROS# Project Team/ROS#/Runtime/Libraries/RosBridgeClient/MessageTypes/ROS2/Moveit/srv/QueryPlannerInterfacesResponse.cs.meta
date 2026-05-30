@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a1588a9733156674d8d9f06535205a14
+guid: e3478946c5b559749ba86491725d49a0
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/srv/QueryPlannerInterfacesResponse.cs
-  uploadId: 761549
+  uploadId: 774722

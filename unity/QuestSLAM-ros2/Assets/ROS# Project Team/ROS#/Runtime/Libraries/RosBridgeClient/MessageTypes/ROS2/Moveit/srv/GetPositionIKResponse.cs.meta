@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9cb5cc670f4096b40a368fbb55f7a7de
+guid: 9ef0deadf020835438982557cf6ade21
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/srv/GetPositionIKResponse.cs
-  uploadId: 761549
+  uploadId: 774722

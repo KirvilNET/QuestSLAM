@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d15eec60429eb5e44bd93ad9f6ea5ffa
+guid: 1c0c8ba1123c5f949b20e50d5dd6afe4
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Urdf/UrdfComponents/UrdfCollision.cs
-  uploadId: 761549
+  uploadId: 774722

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 984a8e47fd98b214fac31037a71aa0f2
+guid: 14a308022104dd14ea78e36fbe53e2a7
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Rosapi/msg/ServiceResponseDetails_Response.cs
-  uploadId: 761549
+  uploadId: 774722

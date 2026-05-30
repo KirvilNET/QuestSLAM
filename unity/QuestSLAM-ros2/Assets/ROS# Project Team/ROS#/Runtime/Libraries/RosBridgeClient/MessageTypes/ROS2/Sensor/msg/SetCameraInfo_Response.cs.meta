@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 02e65f88e426f354bac41c8c78a1b344
+guid: 9125b501122f1334d9767fa1debc0ec3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Sensor/msg/SetCameraInfo_Response.cs
-  uploadId: 761549
+  uploadId: 774722

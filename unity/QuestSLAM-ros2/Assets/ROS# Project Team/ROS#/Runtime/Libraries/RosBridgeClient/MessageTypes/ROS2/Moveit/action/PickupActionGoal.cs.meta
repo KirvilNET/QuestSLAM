@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 52ed9d12adfb0ab4c9404a04241ac915
+guid: 4b508d2e483b18544a436dc7d12e41fe
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/action/PickupActionGoal.cs
-  uploadId: 761549
+  uploadId: 774722

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 292f5bbcb77d9b44e8ea302c6f933862
+guid: acce561d2a005d848ac314822ae51192
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Urdf/UrdfComponents/UrdfJoints/UrdfJointPlanar.cs
-  uploadId: 761549
+  uploadId: 774722

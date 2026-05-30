@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4d168876e82b1084d8697a3c656de426
+guid: 63ace82bcc978bc4e81c3628d5830e02
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Geometry/msg/PoseStamped.cs
-  uploadId: 761549
+  uploadId: 774722

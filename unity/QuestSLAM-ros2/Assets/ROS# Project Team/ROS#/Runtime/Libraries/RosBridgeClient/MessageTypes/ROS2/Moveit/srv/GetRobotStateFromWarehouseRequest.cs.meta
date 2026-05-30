@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 349b39a3c60adec4eb5faba77768d45b
+guid: 431140340226f704fb8ec986c8b04aa9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/srv/GetRobotStateFromWarehouseRequest.cs
-  uploadId: 761549
+  uploadId: 774722

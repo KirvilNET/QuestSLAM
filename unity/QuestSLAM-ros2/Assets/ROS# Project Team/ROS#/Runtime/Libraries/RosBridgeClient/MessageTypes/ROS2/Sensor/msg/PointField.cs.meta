@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c5478cf4157eeb44dabc8ee63922f75d
+guid: b1e16f5acde54f44297a58067fa7ede2
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Sensor/msg/PointField.cs
-  uploadId: 761549
+  uploadId: 774722

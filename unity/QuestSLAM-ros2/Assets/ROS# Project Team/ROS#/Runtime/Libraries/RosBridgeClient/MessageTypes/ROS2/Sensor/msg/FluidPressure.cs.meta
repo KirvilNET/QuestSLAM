@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2c5d7394373927a4a9c0bedf438d981b
+guid: 431714d9ef1c9984690e4e15e3a201fd
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Sensor/msg/FluidPressure.cs
-  uploadId: 761549
+  uploadId: 774722

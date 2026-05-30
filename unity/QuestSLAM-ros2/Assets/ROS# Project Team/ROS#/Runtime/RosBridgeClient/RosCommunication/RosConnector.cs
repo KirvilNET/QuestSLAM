@@ -25,27 +25,25 @@ namespace RosSharp.RosBridgeClient
     public enum RosVersion {ROS1 = 0, ROS2 = 1}
     public class RosConnector : MonoBehaviour
     {
-        
+        [HideInInspector]
         public RosVersion selectedRosVersion = RosVersion.ROS2;
         public int SecondsTimeout = 10;
         public RosSocket RosSocket { get; private set; }
         public RosSocket.SerializerEnum Serializer;
         public Protocol protocol;
-        public string RosBridgeServerUrl;
+        public string RosBridgeServerUrl = "ws://localhost:9090";
 
         public ManualResetEvent IsConnected { get; private set; }
 
-        public virtual void connect()
-        { 
-            RosBridgeServerUrl = PlayerPrefs.GetString("ROSBRIDGEIP", "localhost");
+        public virtual void Awake()
+        {
             IsConnected = new ManualResetEvent(false);
             new Thread(ConnectAndWait).Start();
         }
 
         protected void ConnectAndWait()
         {
-            
-            RosSocket = ConnectToRos(protocol, "ws://" + RosBridgeServerUrl + ":9090", OnConnected, OnClosed, Serializer);
+            RosSocket = ConnectToRos(protocol, RosBridgeServerUrl, OnConnected, OnClosed, Serializer);
 
             if (!IsConnected.WaitOne(SecondsTimeout * 1000))
                 Debug.LogWarning("Failed to connect to RosBridge at: " + RosBridgeServerUrl);

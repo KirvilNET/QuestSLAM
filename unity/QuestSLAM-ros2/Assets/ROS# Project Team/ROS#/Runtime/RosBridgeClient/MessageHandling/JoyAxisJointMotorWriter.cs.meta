@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0a25a61540546f54aaf36aec84836172
+guid: ad5ab4daf6c93324dbf28898bdd613d9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/RosBridgeClient/MessageHandling/JoyAxisJointMotorWriter.cs
-  uploadId: 761549
+  uploadId: 774722

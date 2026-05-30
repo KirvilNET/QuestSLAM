@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 272a026e3d1f9bb4384b86b2149364a9
+guid: aca96d3ccd94ec84a8e491f065162792
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/msg/JointConstraint.cs
-  uploadId: 761549
+  uploadId: 774722

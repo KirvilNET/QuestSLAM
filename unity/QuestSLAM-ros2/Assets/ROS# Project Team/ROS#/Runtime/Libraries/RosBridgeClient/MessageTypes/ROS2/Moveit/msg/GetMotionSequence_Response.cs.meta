@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a050f929508beb24b9666461f5570748
+guid: 7db775196f962a74e930eb955604e7fd
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/msg/GetMotionSequence_Response.cs
-  uploadId: 761549
+  uploadId: 774722

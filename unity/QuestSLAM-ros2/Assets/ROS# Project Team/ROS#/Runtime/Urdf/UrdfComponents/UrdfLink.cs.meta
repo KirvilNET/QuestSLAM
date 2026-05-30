@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7ff3afc1d93fb0c468dcb37253b3ce4f
+guid: fba5fd74d37a6cf4284698624eb8f6aa
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Urdf/UrdfComponents/UrdfLink.cs
-  uploadId: 761549
+  uploadId: 774722

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: fe3c67a94855372439ea0f4a1d301c62
+guid: 0f3317c68bc66c54a8981fd7b133fed4
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Geometry/msg/PolygonStamped.cs
-  uploadId: 761549
+  uploadId: 774722

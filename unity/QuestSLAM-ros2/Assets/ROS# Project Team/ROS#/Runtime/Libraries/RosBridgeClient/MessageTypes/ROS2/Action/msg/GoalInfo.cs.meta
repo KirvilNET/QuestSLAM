@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b6a086f84ca403c40a388fb9810a885a
+guid: f6a89b2b058ecc84fa108e030da2dc66
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Action/msg/GoalInfo.cs
-  uploadId: 761549
+  uploadId: 774722

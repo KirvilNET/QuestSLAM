@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ef96b765f88c8c14497e96f0b55f8799
+guid: eb5282f6adab741488ccc722563a95ac
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/action/PlaceResult.cs
-  uploadId: 761549
+  uploadId: 774722

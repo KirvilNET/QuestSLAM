@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0044fdcf9f36289408c1ea1dc0ba7c08
+guid: bf9b265fcb58d4d449795c38ab107886
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Moveit/msg/GraspPlanning_Request.cs
-  uploadId: 761549
+  uploadId: 774722

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6a237edaaf96f62479158c533c03a6d5
+guid: ad1e7d3352f41cb4f897473b1e6dfc2e
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -13,6 +13,6 @@ AssetOrigin:
   serializedVersion: 1
   productId: 107085
   packageName: ROS#
-  packageVersion: 2.1.1
+  packageVersion: 2.2.0
   assetPath: Assets/ROS# Project Team/ROS#/Runtime/Libraries/RosBridgeClient/MessageTypes/ROS2/Geometry/msg/AccelStamped.cs
-  uploadId: 761549
+  uploadId: 774722
